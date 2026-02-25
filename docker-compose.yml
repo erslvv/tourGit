@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: safetrip-postgres
+    environment:
+      POSTGRES_DB: safetrip
+      POSTGRES_USER: safetrip
+      POSTGRES_PASSWORD: safetrip123
+    ports:
+      - "5432:5432"
+    volumes:
+      - safetrip_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U safetrip -d safetrip"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: safetrip-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_APPLICATION_NAME: safetrip
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/safetrip
+      SPRING_DATASOURCE_USERNAME: safetrip
+      SPRING_DATASOURCE_PASSWORD: safetrip123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
+
+volumes:
+  safetrip_pg_data:
