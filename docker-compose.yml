@@ -3,7 +3,7 @@ version: "3.9"
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: safetrip-postgres
+    container_name: safetrip-postgres-2
     environment:
       POSTGRES_DB: safetrip
       POSTGRES_USER: safetrip
