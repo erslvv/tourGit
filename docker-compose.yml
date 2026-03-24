@@ -3,7 +3,7 @@ version: "3.9"
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: safetrip-postgres-2
+    container_name: safetrip-postgres
     environment:
       POSTGRES_DB: safetrip
       POSTGRES_USER: safetrip
@@ -16,7 +16,18 @@ services:
       test: ["CMD-SHELL", "pg_isready -U safetrip -d safetrip"]
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 20
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: safetrip-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@safetrip.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
 
   app:
     build: .
@@ -27,13 +38,12 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_APPLICATION_NAME: safetrip
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/safetrip
       SPRING_DATASOURCE_USERNAME: safetrip
       SPRING_DATASOURCE_PASSWORD: safetrip123
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: "true"
-      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      APP_SECURITY_JWT_SECRET: SafeTripJwtSecretKeyForDockerLocalRun2026
+      APP_SECURITY_JWT_EXPIRATION_MINUTES: 1440
 
 volumes:
   safetrip_pg_data:

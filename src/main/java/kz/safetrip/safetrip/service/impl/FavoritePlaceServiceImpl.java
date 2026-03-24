@@ -18,76 +18,33 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class FavoritePlaceServiceImpl implements FavoritePlaceService {
-
     private final FavoritePlaceRepository favoritePlaceRepository;
+    private final FavoritePlaceMapper favoritePlaceMapper;
     private final UserRepository userRepository;
     private final PlaceRepository placeRepository;
-    private final FavoritePlaceMapper favoritePlaceMapper;
 
     @Override
     @Transactional
     public FavoritePlaceDto create(FavoritePlaceDto dto) {
-        if (dto.getUserId() == null || dto.getPlaceId() == null) {
-            throw new IllegalArgumentException("userId and placeId are required");
-        }
-
-        userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found: " + dto.getUserId()));
-        placeRepository.findById(dto.getPlaceId())
-                .orElseThrow(() -> new EntityNotFoundException("Place not found: " + dto.getPlaceId()));
-
-        return favoritePlaceRepository.findByUserIdAndPlaceId(dto.getUserId(), dto.getPlaceId())
-                .map(favoritePlaceMapper::toDto)
-                .orElseGet(() -> {
-                    FavoritePlace entity = favoritePlaceMapper.toEntity(dto);
-                    entity.setId(null);
-                    FavoritePlace saved = favoritePlaceRepository.save(entity);
-                    return favoritePlaceMapper.toDto(saved);
-                });
+        validateLinks(dto.getUserId(), dto.getPlaceId());
+        if (favoritePlaceRepository.existsByUser_IdAndPlace_Id(dto.getUserId(), dto.getPlaceId())) throw new IllegalArgumentException("Favorite place already exists");
+        FavoritePlace entity = favoritePlaceMapper.toEntity(dto);
+        entity.setId(null);
+        return favoritePlaceMapper.toDto(favoritePlaceRepository.save(entity));
     }
 
-    @Override
-    public FavoritePlaceDto getById(Long id) {
-        return favoritePlaceMapper.toDto(getEntityById(id));
-    }
+    @Override public FavoritePlaceDto getById(Long id) { return favoritePlaceMapper.toDto(getEntityById(id)); }
+    @Override public List<FavoritePlaceDto> getAll() { return favoritePlaceMapper.toDtoList(favoritePlaceRepository.findAll()); }
+    @Override public List<FavoritePlaceDto> getByUserId(Long userId) { return favoritePlaceMapper.toDtoList(favoritePlaceRepository.findAllByUser_Id(userId)); }
+    @Override public List<FavoritePlaceDto> getByPlaceId(Long placeId) { return favoritePlaceMapper.toDtoList(favoritePlaceRepository.findAllByPlace_Id(placeId)); }
+    @Override public boolean existsByUserIdAndPlaceId(Long userId, Long placeId) { return favoritePlaceRepository.existsByUser_IdAndPlace_Id(userId, placeId); }
+    @Override @Transactional public void deleteById(Long id) { if (!favoritePlaceRepository.existsById(id)) throw new EntityNotFoundException("FavoritePlace not found: " + id); favoritePlaceRepository.deleteById(id); }
+    @Override @Transactional public void deleteByUserIdAndPlaceId(Long userId, Long placeId) { if (!favoritePlaceRepository.deleteByUserIdAndPlaceId(userId, placeId)) throw new EntityNotFoundException("FavoritePlace not found for userId=" + userId + ", placeId=" + placeId); }
 
-    @Override
-    public List<FavoritePlaceDto> getAll() {
-        return favoritePlaceMapper.toDtoList(favoritePlaceRepository.findAll());
-    }
-
-    @Override
-    public List<FavoritePlaceDto> getByUserId(Long userId) {
-        return favoritePlaceMapper.toDtoList(favoritePlaceRepository.findAllByUser_Id(userId));
-    }
-
-    @Override
-    public List<FavoritePlaceDto> getByPlaceId(Long placeId) {
-        return favoritePlaceMapper.toDtoList(favoritePlaceRepository.findAllByPlace_Id(placeId));
-    }
-
-    @Override
-    public boolean existsByUserIdAndPlaceId(Long userId, Long placeId) {
-        return favoritePlaceRepository.existsByUser_IdAndPlace_Id(userId, placeId);
-    }
-
-    @Override
-    @Transactional
-    public void deleteById(Long id) {
-        if (!favoritePlaceRepository.existsById(id)) {
-            throw new EntityNotFoundException("FavoritePlace not found: " + id);
-        }
-        favoritePlaceRepository.deleteById(id);
-    }
-
-    @Override
-    @Transactional
-    public void deleteByUserIdAndPlaceId(Long userId, Long placeId) {
-        favoritePlaceRepository.deleteByUser_IdAndPlace_Id(userId, placeId);
-    }
-
-    private FavoritePlace getEntityById(Long id) {
-        return favoritePlaceRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("FavoritePlace not found: " + id));
+    private FavoritePlace getEntityById(Long id) { return favoritePlaceRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("FavoritePlace not found: " + id)); }
+    private void validateLinks(Long userId, Long placeId) {
+        if (userId == null || placeId == null) throw new IllegalArgumentException("userId and placeId are required");
+        if (!userRepository.existsById(userId)) throw new EntityNotFoundException("User not found: " + userId);
+        if (!placeRepository.existsById(placeId)) throw new EntityNotFoundException("Place not found: " + placeId);
     }
 }
