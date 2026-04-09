@@ -1,0 +1,29 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Home from "./pages/Home";
+import Tours from "./pages/Tours";
+import Food from "./pages/Food";
+import Entertainment from "./pages/Entertainment";
+import Security from "./pages/Security";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import TourDetails from "./pages/TourDetails";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/tours" element={<Tours />} />
+        <Route path="/food" element={<Food />} />
+        <Route path="/entertainment" element={<Entertainment />} />
+        <Route path="/security" element={<Security />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/tours/:id" element={<TourDetails />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;

@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# frontend
+safetrip-front/node_modules
+safetrip-front/dist
+
+# general
+node_modules
+dist
+.env

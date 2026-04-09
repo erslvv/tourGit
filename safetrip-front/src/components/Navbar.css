@@ -1,0 +1,67 @@
+.navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 24px 48px;
+  box-sizing: border-box;
+
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.navbar__logo {
+  color: white;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.navbar__links {
+  display: flex;
+  gap: 28px;
+}
+
+.navbar__links a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.navbar__auth {
+  display: flex;
+  gap: 14px;
+}
+
+.btn {
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+.btn--ghost {
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.btn--solid {
+  background: white;
+  color: #1f3b57;
+}
+
+.btn--solid:hover {
+  background: #f2f2f2;
+}
