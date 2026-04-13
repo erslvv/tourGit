@@ -4,48 +4,85 @@
   left: 0;
   width: 100%;
   z-index: 10;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  padding: 24px 48px;
+  gap: 24px;
+  padding: 24px 40px;
   box-sizing: border-box;
-
-  backdrop-filter: blur(10px);
-  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(18px);
+  background: linear-gradient(180deg, rgba(10, 26, 43, 0.38), rgba(10, 26, 43, 0.08));
 }
 
 .navbar__logo {
   color: white;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 0.04em;
+  text-decoration: none;
 }
 
 .navbar__links {
   display: flex;
-  gap: 28px;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .navbar__links a {
   color: white;
   text-decoration: none;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 999px;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.navbar__links a:hover {
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .navbar__auth {
   display: flex;
   gap: 14px;
+  align-items: center;
+}
+
+.navbar__user {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  color: white;
+}
+
+.navbar__user span {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.navbar__user small {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.72;
 }
 
 .btn {
   text-decoration: none;
-  padding: 10px 20px;
+  padding: 11px 20px;
   border-radius: 999px;
   font-weight: 600;
-  transition: 0.3s ease;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  border: 0;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .btn--ghost {
@@ -64,4 +101,28 @@
 
 .btn--solid:hover {
   background: #f2f2f2;
+}
+
+.navbar__logout {
+  font-family: inherit;
+}
+
+@media (max-width: 1100px) {
+  .navbar {
+    padding: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 720px) {
+  .navbar__links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .navbar__auth {
+    width: 100%;
+    justify-content: center;
+  }
 }

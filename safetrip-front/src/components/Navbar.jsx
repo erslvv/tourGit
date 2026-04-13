@@ -1,10 +1,20 @@
 import { Link } from "react-router-dom";
+import { clearAuth, getCurrentUser } from "../utils/auth";
 import "./Navbar.css";
 
 function Navbar() {
+  const user = getCurrentUser();
+
+  const handleLogout = () => {
+    clearAuth();
+    window.location.href = "/";
+  };
+
   return (
     <header className="navbar">
-      <div className="navbar__logo">SafeTrip KZ</div>
+      <Link to="/" className="navbar__logo">
+        SafeTrip Almaty
+      </Link>
 
       <nav className="navbar__links">
         <Link to="/">Home</Link>
@@ -15,12 +25,26 @@ function Navbar() {
       </nav>
 
       <div className="navbar__auth">
-        <Link to="/login" className="btn btn--ghost">
-          Login
-        </Link>
-        <Link to="/register" className="btn btn--solid">
-          Register
-        </Link>
+        {user ? (
+          <>
+            <div className="navbar__user">
+              <span>{user.email}</span>
+              <small>{user.role}</small>
+            </div>
+            <button type="button" className="btn btn--solid navbar__logout" onClick={handleLogout}>
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className="btn btn--ghost">
+              Login
+            </Link>
+            <Link to="/register" className="btn btn--solid">
+              Register
+            </Link>
+          </>
+        )}
       </div>
     </header>
   );

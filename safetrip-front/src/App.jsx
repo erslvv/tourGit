@@ -8,6 +8,7 @@ import Security from "./pages/Security";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import TourDetails from "./pages/TourDetails";
+import PlaceDetails from "./pages/PlaceDetails";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/tours/:id" element={<TourDetails />} />
+        <Route path="/places/:id" element={<PlaceDetails />} />
       </Routes>
     </BrowserRouter>
   );

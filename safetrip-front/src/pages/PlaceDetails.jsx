@@ -3,14 +3,14 @@ import { Link, useParams } from "react-router-dom";
 import api from "../api/axios";
 import Navbar from "../components/Navbar";
 import { getApiErrorMessage } from "../utils/apiError";
-import { formatPrice, formatRating } from "../utils/format";
+import { formatPrice, formatRating, getPlaceSubtitle, isFoodCategory } from "../utils/format";
 import { isAuthenticated } from "../utils/auth";
 import { applyImageFallback } from "../utils/images";
 import "./Explore.css";
 
-function TourDetails() {
+function PlaceDetails() {
   const { id } = useParams();
-  const [tour, setTour] = useState(null);
+  const [place, setPlace] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [favoriteLoading, setFavoriteLoading] = useState(false);
@@ -18,32 +18,32 @@ function TourDetails() {
   const [favoriteMessage, setFavoriteMessage] = useState("");
 
   useEffect(() => {
-    const fetchTour = async () => {
+    const fetchPlace = async () => {
       try {
-        const [{ data: tourData }, favoritesResponse] = await Promise.all([
-          api.get(`/api/tours/${id}`),
+        const [{ data: placeData }, favoritesResponse] = await Promise.all([
+          api.get(`/api/places/${id}`),
           isAuthenticated() ? api.get("/api/profile/favorites") : Promise.resolve({ data: null }),
         ]);
 
-        setTour(tourData);
+        setPlace(placeData);
 
         if (favoritesResponse.data) {
-          const favorite = favoritesResponse.data.tours.find((item) => item.tourId === Number(id));
+          const favorite = favoritesResponse.data.places.find((item) => item.placeId === Number(id));
           setIsFavorite(Boolean(favorite));
         }
       } catch (err) {
-        setError(getApiErrorMessage(err, "Failed to load tour details."));
+        setError(getApiErrorMessage(err, "Failed to load place details."));
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTour();
+    fetchPlace();
   }, [id]);
 
   const toggleFavorite = async () => {
     if (!isAuthenticated()) {
-      setFavoriteMessage("Login first to save this tour in favorites.");
+      setFavoriteMessage("Login first to save this place in favorites.");
       return;
     }
 
@@ -52,13 +52,13 @@ function TourDetails() {
 
     try {
       if (isFavorite) {
-        await api.delete(`/api/profile/favorites/tours/${id}`);
+        await api.delete(`/api/profile/favorites/places/${id}`);
         setIsFavorite(false);
-        setFavoriteMessage("Tour removed from favorites.");
+        setFavoriteMessage("Place removed from favorites.");
       } else {
-        await api.post(`/api/profile/favorites/tours/${id}`);
+        await api.post(`/api/profile/favorites/places/${id}`);
         setIsFavorite(true);
-        setFavoriteMessage("Tour added to favorites.");
+        setFavoriteMessage("Place added to favorites.");
       }
     } catch (err) {
       setFavoriteMessage(getApiErrorMessage(err, "Favorite action failed."));
@@ -72,29 +72,18 @@ function TourDetails() {
       <div className="details-page">
         <Navbar />
         <div className="details-shell">
-          <div className="explore-feedback">Loading tour details...</div>
+          <div className="explore-feedback">Loading place details...</div>
         </div>
       </div>
     );
   }
 
-  if (error) {
+  if (error || !place) {
     return (
       <div className="details-page">
         <Navbar />
         <div className="details-shell">
-          <div className="explore-feedback">{error}</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!tour) {
-    return (
-      <div className="details-page">
-        <Navbar />
-        <div className="details-shell">
-          <div className="explore-feedback">Tour not found.</div>
+          <div className="explore-feedback">{error || "Place not found."}</div>
         </div>
       </div>
     );
@@ -107,12 +96,14 @@ function TourDetails() {
       <div className="details-shell">
         <div className="details-banner">
           <img
-            src={tour.imageUrl || "https://via.placeholder.com/1200x600?text=Tour"}
-            alt={tour.title}
+            src={place.imageUrl || "https://via.placeholder.com/1200x600?text=Place"}
+            alt={place.title}
             onError={(event) =>
               applyImageFallback(
                 event,
-                "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1400&q=80"
+                isFoodCategory(place.category)
+                  ? "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=80"
+                  : "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1400&q=80"
               )
             }
           />
@@ -120,10 +111,10 @@ function TourDetails() {
 
         <div className="details-content">
           <section className="details-main">
-            <p className="details-main__eyebrow">{tour.city}</p>
-            <h1>{tour.title}</h1>
+            <p className="details-main__eyebrow">{getPlaceSubtitle(place)}</p>
+            <h1>{place.title}</h1>
             <p className="details-description">
-              {tour.description || "Detailed description is not available yet."}
+              {place.description || "Detailed description is not available yet."}
             </p>
 
             <div className="details-actions">
@@ -140,8 +131,8 @@ function TourDetails() {
                     : "Save to favorites"}
               </button>
 
-              <Link className="explore-link" to="/tours">
-                Back to tours
+              <Link className="explore-link" to={isFoodCategory(place.category) ? "/food" : "/entertainment"}>
+                Back to section
               </Link>
             </div>
 
@@ -151,34 +142,30 @@ function TourDetails() {
           <aside className="details-side">
             <dl className="details-list">
               <div>
-                <dt>City</dt>
-                <dd>{tour.city}</dd>
+                <dt>Category</dt>
+                <dd>{place.category || "Not specified"}</dd>
               </div>
               <div>
-                <dt>Price</dt>
-                <dd>{formatPrice(tour.price)}</dd>
+                <dt>City</dt>
+                <dd>{place.city || "Almaty"}</dd>
+              </div>
+              <div>
+                <dt>Average price</dt>
+                <dd>{formatPrice(place.averagePrice)}</dd>
               </div>
               <div>
                 <dt>Rating</dt>
-                <dd>{formatRating(tour.rating)}</dd>
-              </div>
-              <div>
-                <dt>Duration</dt>
-                <dd>{tour.durationDays ? `${tour.durationDays} day(s)` : "Flexible"}</dd>
-              </div>
-              <div>
-                <dt>Verified</dt>
-                <dd>{tour.isVerified ? "Yes" : "No"}</dd>
-              </div>
-              <div>
-                <dt>Featured</dt>
-                <dd>{tour.isFeatured ? "Yes" : "No"}</dd>
+                <dd>{formatRating(place.rating)}</dd>
               </div>
               <div>
                 <dt>Coordinates</dt>
                 <dd>
-                  {tour.startLat && tour.startLng ? `${tour.startLat}, ${tour.startLng}` : "Not specified"}
+                  {place.latitude}, {place.longitude}
                 </dd>
+              </div>
+              <div>
+                <dt>Verified</dt>
+                <dd>{place.isVerified ? "Yes" : "No"}</dd>
               </div>
             </dl>
           </aside>
@@ -188,4 +175,4 @@ function TourDetails() {
   );
 }
 
-export default TourDetails;
+export default PlaceDetails;

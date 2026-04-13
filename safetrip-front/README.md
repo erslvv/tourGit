@@ -1,16 +1,73 @@
-# React + Vite
+# SafeTrip Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend for the SafeTrip project. This part of the system is made for tourists visiting Almaty and helps them browse tours, food places, entertainment spots, and basic safety information.
 
-Currently, two official plugins are available:
+## What is included
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- home page with the main project presentation
+- tours page with cards and detailed tour view
+- food page based on place data from backend
+- entertainment page based on place data from backend
+- security page with useful practical information
+- login and registration pages connected to backend auth
+- favorites for authorized users
 
-## React Compiler
+## Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React
+- Vite
+- React Router
+- Axios
 
-## Expanding the ESLint configuration
+## Run the frontend
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Open a terminal in `safetrip-front` and run:
+
+```bash
+npm install
+npm run dev
+```
+
+By default the app runs on:
+
+```text
+http://localhost:5173
+```
+
+## Backend connection
+
+The frontend works with the backend from the root `tourGit` project.
+
+Main API routes used by the frontend:
+
+- `/api/auth/login`
+- `/api/auth/register`
+- `/api/tours`
+- `/api/tours/:id`
+- `/api/places`
+- `/api/places/:id`
+- `/api/profile/favorites`
+
+Vite proxy is configured for local development, so requests from the frontend can go to the backend running on:
+
+```text
+http://localhost:8080
+```
+
+## Main pages
+
+- `/` home page
+- `/tours` tours list
+- `/tours/:id` tour details
+- `/food` food places
+- `/entertainment` entertainment places
+- `/places/:id` place details
+- `/security` safety information
+- `/login` login page
+- `/register` registration page
+
+## Notes
+
+- If images from backend seed data do not load, the frontend uses fallback images.
+- Favorites work only after login.
+- Public lists like tours and places can be opened without authorization.

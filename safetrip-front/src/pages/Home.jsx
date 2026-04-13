@@ -3,89 +3,186 @@ import Navbar from "../components/Navbar";
 import "./Home.css";
 
 function Home() {
+  const highlights = [
+    {
+      label: "Mountain escapes",
+      title: "Big Almaty Lake",
+      text: "Discover alpine views, fresh air, and guided routes near the city.",
+      image:
+        "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80",
+      link: "/tours",
+      linkLabel: "View Tours",
+    },
+    {
+      label: "Local food",
+      title: "Taste Almaty",
+      text: "Find trusted cafes, traditional dishes, and cozy city spots for tourists.",
+      image:
+        "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80",
+      link: "/food",
+      linkLabel: "Explore Food",
+    },
+    {
+      label: "City moments",
+      title: "Entertainment & culture",
+      text: "Move from museums and viewpoints to evening activities and local events.",
+      image:
+        "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1200&q=80",
+      link: "/entertainment",
+      linkLabel: "See More",
+    },
+  ];
+
+  const quickSections = [
+    {
+      eyebrow: "Guided routes",
+      title: "Tours",
+      text: "Browse safe and verified trips around Almaty, then open a card to see full details.",
+      link: "/tours",
+    },
+    {
+      eyebrow: "Where to eat",
+      title: "Food",
+      text: "Show tourists trusted places to eat with atmosphere, pricing, and useful notes.",
+      link: "/food",
+    },
+    {
+      eyebrow: "What to do",
+      title: "Entertainment",
+      text: "Help visitors choose activities, city spots, and relaxing places after tours.",
+      link: "/entertainment",
+    },
+    {
+      eyebrow: "Stay prepared",
+      title: "Security",
+      text: "Collect important rules, emergency numbers, and basic local guidance in one place.",
+      link: "/security",
+    },
+  ];
+
   return (
     <div className="home">
       <Navbar />
 
       <section className="hero">
-        <div className="hero__overlay"></div>
+        <div className="hero__overlay" />
+        <div className="hero__glow hero__glow--left" />
+        <div className="hero__glow hero__glow--right" />
 
         <div className="hero__content">
-          <p className="hero__subtitle">Trusted Travel Platform for First-Time Visitors</p>
+          <p className="hero__subtitle">Almaty city guide for first-time visitors</p>
 
           <h1>
-            Welcome to <br />
-            Almaty
+            Welcome to
+            <br />
+            Kazakhstan
           </h1>
 
           <p className="hero__text">
-            Explore Kazakhstan safely with verified tours, trusted places, and useful local
-            information in one platform.
+            Start in Almaty with verified tours, trusted food spots, entertainment ideas, and
+            useful local information designed for tourists who want to feel confident from day one.
           </p>
+
+          <div className="hero__stats">
+            <div>
+              <strong>City-first</strong>
+              <span>Focused on Almaty routes</span>
+            </div>
+            <div>
+              <strong>Verified</strong>
+              <span>Safer travel picks</span>
+            </div>
+            <div>
+              <strong>Easy flow</strong>
+              <span>Explore, choose, open details</span>
+            </div>
+          </div>
 
           <div className="hero__buttons">
             <Link to="/tours" className="hero__btn hero__btn--primary">
-              Explore Tours
+              Explore Almaty
             </Link>
 
-            <Link to="/register" className="hero__btn hero__btn--secondary">
-              Get Started
+            <Link to="/login" className="hero__btn hero__btn--secondary">
+              Login
             </Link>
+
+            <Link to="/register" className="hero__btn hero__btn--accent">
+              Register
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="intro">
+        <div className="intro__copy">
+          <p className="section-label">Discover the city with confidence</p>
+          <h2>Almaty is your first stop, and this platform is your starting point.</h2>
+          <p>
+            The idea is simple: a tourist opens the website, learns what Kazakhstan and Almaty can
+            offer, then moves into tours, food, entertainment, and safety information without
+            getting lost.
+          </p>
+        </div>
+
+        <div className="intro__visual">
+          <div className="intro__card intro__card--large">
+            <span>Home</span>
+            <strong>Learn about the city first</strong>
+          </div>
+          <div className="intro__card">
+            <span>Sections</span>
+            <strong>Move through Tours, Food, Entertainment, Security</strong>
+          </div>
+          <div className="intro__card">
+            <span>Cards</span>
+            <strong>Open details, location, price, and description</strong>
           </div>
         </div>
       </section>
 
       <section className="featured">
         <div className="featured__header">
-          <p className="featured__label">Popular destinations</p>
-          <h2>Featured Tours</h2>
+          <p className="section-label">What the user can explore</p>
+          <h2>From mountain routes to food and city experiences.</h2>
           <p className="featured__text">
-            Discover some of the most exciting places near Almaty for first-time visitors.
+            The homepage should introduce the mood of Almaty and smoothly guide users into the
+            sections where real cards and detailed pages live.
           </p>
         </div>
 
         <div className="cards">
-          <div className="card">
-            <img
-              src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80"
-              alt="Mountain Tour"
-            />
-            <div className="card__content">
-              <h3>Mountain Tour</h3>
-              <p>Explore beautiful mountain landscapes near Almaty with a trusted local guide.</p>
-              <Link to="/tours/1" className="card__link">
-                View More
-              </Link>
-            </div>
-          </div>
+          {highlights.map((item) => (
+            <article className="card" key={item.title}>
+              <img src={item.image} alt={item.title} />
+              <div className="card__content">
+                <p className="card__label">{item.label}</p>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+                <Link to={item.link} className="card__link">
+                  {item.linkLabel}
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
 
-          <div className="card">
-            <img
-              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80"
-              alt="Kolsai Lakes"
-            />
-            <div className="card__content">
-              <h3>Kolsai Lakes</h3>
-              <p>Visit one of the most beautiful natural destinations in Kazakhstan.</p>
-              <Link to="/tours/1" className="card__link">
-                View More
-              </Link>
-            </div>
-          </div>
+      <section className="sections">
+        <div className="sections__header">
+          <p className="section-label">Main sections</p>
+          <h2>Each section can become a working page connected to backend data.</h2>
+        </div>
 
-          <div className="card">
-            <img
-              src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=900&q=80"
-              alt="City Tour"
-            />
-            <div className="card__content">
-              <h3>City Tour</h3>
-              <p>Discover Almaty city highlights, culture, local food, and iconic locations.</p>
-              <Link to="/tours/1" className="card__link">
-                View More
-              </Link>
-            </div>
-          </div>
+        <div className="sections__grid">
+          {quickSections.map((section) => (
+            <article className="section-card" key={section.title}>
+              <p className="section-card__eyebrow">{section.eyebrow}</p>
+              <h3>{section.title}</h3>
+              <p>{section.text}</p>
+              <Link to={section.link}>Open section</Link>
+            </article>
+          ))}
         </div>
       </section>
     </div>
