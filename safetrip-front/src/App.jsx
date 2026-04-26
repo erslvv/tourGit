@@ -9,6 +9,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import TourDetails from "./pages/TourDetails";
 import PlaceDetails from "./pages/PlaceDetails";
+import Profile from "./pages/Profile";
+import Admin from "./pages/Admin";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
         <Route path="/security" element={<Security />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/admin" element={<Admin />} />
         <Route path="/tours/:id" element={<TourDetails />} />
         <Route path="/places/:id" element={<PlaceDetails />} />
       </Routes>

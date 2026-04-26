@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import almatyHero from "../assets/images/almaty.jpg";
+import bigAlmatyLakeImage from "../assets/images/bal.jpg";
 import "./Home.css";
 
 function Home() {
@@ -8,8 +10,7 @@ function Home() {
       label: "Mountain escapes",
       title: "Big Almaty Lake",
       text: "Discover alpine views, fresh air, and guided routes near the city.",
-      image:
-        "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80",
+      image: bigAlmatyLakeImage,
       link: "/tours",
       linkLabel: "View Tours",
     },
@@ -64,7 +65,7 @@ function Home() {
     <div className="home">
       <Navbar />
 
-      <section className="hero">
+      <section className="hero" style={{ backgroundImage: `linear-gradient(120deg, rgba(9, 29, 44, 0.72), rgba(9, 29, 44, 0.18)), url(${almatyHero})` }}>
         <div className="hero__overlay" />
         <div className="hero__glow hero__glow--left" />
         <div className="hero__glow hero__glow--right" />

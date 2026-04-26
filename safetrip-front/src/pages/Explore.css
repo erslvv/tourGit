@@ -339,6 +339,77 @@
   gap: 20px;
 }
 
+.profile-summary {
+  margin-bottom: 30px;
+}
+
+.profile-toolbar {
+  margin-top: 34px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.admin-card {
+  padding: 28px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(168, 191, 210, 0.28);
+  box-shadow: 0 18px 46px rgba(14, 37, 58, 0.08);
+}
+
+.admin-card h3 {
+  color: #102842;
+  margin-bottom: 18px;
+  font-size: 30px;
+}
+
+.admin-form {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-form input,
+.admin-form textarea,
+.admin-form select,
+.admin-form button {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid #d6e2ee;
+  background: #fbfdff;
+  color: #102842;
+  font-size: 15px;
+  font-family: inherit;
+}
+
+.admin-form textarea {
+  resize: vertical;
+}
+
+.admin-form button {
+  border: 0;
+  background: #143858;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #35526d;
+}
+
+.admin-check input {
+  width: auto;
+  padding: 0;
+}
+
 .security-card h3 {
   color: #102842;
   margin-bottom: 14px;
@@ -358,7 +429,8 @@
 @media (max-width: 900px) {
   .explore-stats,
   .details-content,
-  .security-grid {
+  .security-grid,
+  .admin-grid {
     grid-template-columns: 1fr;
   }
 
