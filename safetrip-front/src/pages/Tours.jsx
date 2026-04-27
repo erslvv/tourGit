@@ -4,7 +4,10 @@ import api from "../api/axios";
 import Navbar from "../components/Navbar";
 import { getApiErrorMessage } from "../utils/apiError";
 import { formatPrice, formatRating } from "../utils/format";
+import { getTourExternalLink } from "../utils/externalLinks";
 import { applyImageFallback } from "../utils/images";
+import bigAlmatyLakeImage from "../assets/images/bal.jpg";
+import charynImage from "../assets/images/charyn.jpg";
 import "./Explore.css";
 
 function Tours() {
@@ -90,7 +93,13 @@ function Tours() {
             tours.map((tour) => (
               <article className="explore-card" key={tour.id}>
                 <img
-                  src={tour.imageUrl || "https://via.placeholder.com/400x250?text=Tour"}
+                  src={
+                    tour.title === "Big Almaty Lake Day Tour"
+                      ? bigAlmatyLakeImage
+                      : tour.title === "Charyn Canyon Adventure"
+                      ? charynImage
+                      : tour.imageUrl || "https://via.placeholder.com/400x250?text=Tour"
+                  }
                   alt={tour.title}
                   onError={(event) =>
                     applyImageFallback(
@@ -101,6 +110,11 @@ function Tours() {
                 />
 
                 <div className="explore-card__body">
+                  {(() => {
+                    const instagramLink = getTourExternalLink(tour.title);
+
+                    return (
+                      <>
                   <p className="explore-card__meta">{tour.city}</p>
                   <h3>{tour.title}</h3>
                   <p className="explore-card__text">
@@ -119,7 +133,23 @@ function Tours() {
                     <Link to={`/tours/${tour.id}`} className="explore-link">
                       View Details
                     </Link>
+
+                    {instagramLink ? (
+                      <a
+                        href={instagramLink}
+                        className="explore-button"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Instagram
+                      </a>
+                    ) : (
+                      <span className="explore-inline-note">Add Instagram link later</span>
+                    )}
                   </div>
+                      </>
+                    );
+                  })()}
                 </div>
               </article>
             ))

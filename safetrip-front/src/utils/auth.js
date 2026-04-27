@@ -41,3 +41,8 @@ export function clearAuth() {
 export function isAuthenticated() {
   return Boolean(getAccessToken());
 }
+
+export function isAdminUser() {
+  const role = getCurrentUser()?.role;
+  return role === "ADMIN" || role === "MODERATOR";
+}

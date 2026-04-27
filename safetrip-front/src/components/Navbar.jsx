@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
-import { clearAuth, getCurrentUser } from "../utils/auth";
+import { clearAuth, getCurrentUser, isAdminUser } from "../utils/auth";
 import "./Navbar.css";
 
 function Navbar() {
   const user = getCurrentUser();
+  const isAdmin = isAdminUser();
 
   const handleLogout = () => {
     clearAuth();
@@ -22,6 +23,8 @@ function Navbar() {
         <Link to="/food">Food</Link>
         <Link to="/entertainment">Entertainment</Link>
         <Link to="/security">Security</Link>
+        {user ? <Link to="/profile">Profile</Link> : null}
+        {isAdmin ? <Link to="/admin">Admin</Link> : null}
       </nav>
 
       <div className="navbar__auth">

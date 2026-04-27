@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import { getApiErrorMessage } from "../utils/apiError";
 import { formatPrice, formatRating } from "../utils/format";
 import { isAuthenticated } from "../utils/auth";
+import { getTourExternalLink } from "../utils/externalLinks";
 import { applyImageFallback } from "../utils/images";
 import "./Explore.css";
 
@@ -16,6 +17,7 @@ function TourDetails() {
   const [favoriteLoading, setFavoriteLoading] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteMessage, setFavoriteMessage] = useState("");
+  const instagramLink = getTourExternalLink(tour?.title);
 
   useEffect(() => {
     const fetchTour = async () => {
@@ -143,6 +145,19 @@ function TourDetails() {
               <Link className="explore-link" to="/tours">
                 Back to tours
               </Link>
+
+              {instagramLink ? (
+                <a
+                  className="explore-link explore-link--external"
+                  href={instagramLink}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open Instagram
+                </a>
+              ) : (
+                <p className="explore-inline-note">Add Instagram link in `externalLinks.js`.</p>
+              )}
             </div>
 
             {favoriteMessage ? <p className="explore-note">{favoriteMessage}</p> : null}
