@@ -20,7 +20,7 @@
   color: #ffffff;
   background:
     linear-gradient(130deg, rgba(8, 29, 46, 0.84), rgba(26, 90, 123, 0.44)),
-    url("https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1800&q=80");
+    url("../assets/images/almaty.jpg");
   background-size: cover;
   background-position: center;
   box-shadow: 0 28px 68px rgba(13, 36, 56, 0.16);
@@ -28,26 +28,38 @@
 
 .explore-hero--tours {
   background-image:
-    linear-gradient(130deg, rgba(8, 29, 46, 0.84), rgba(26, 90, 123, 0.44)),
-    url("https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1800&q=80");
+    linear-gradient(130deg, rgba(8, 29, 46, 0.76), rgba(26, 90, 123, 0.34)),
+    url("../assets/images/charyn.jpg");
 }
 
 .explore-hero--food {
   background-image:
-    linear-gradient(130deg, rgba(44, 24, 13, 0.82), rgba(165, 102, 56, 0.4)),
+    linear-gradient(130deg, rgba(44, 24, 13, 0.84), rgba(126, 74, 36, 0.44)),
     url("https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1800&q=80");
 }
 
 .explore-hero--entertainment {
   background-image:
-    linear-gradient(130deg, rgba(16, 28, 56, 0.82), rgba(70, 89, 156, 0.4)),
-    url("https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1800&q=80");
+    linear-gradient(130deg, rgba(16, 28, 56, 0.8), rgba(54, 85, 140, 0.34)),
+    url("../assets/images/almaty1.webp");
 }
 
 .explore-hero--security {
   background-image:
-    linear-gradient(130deg, rgba(17, 43, 54, 0.82), rgba(52, 120, 124, 0.38)),
-    url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1800&q=80");
+    linear-gradient(130deg, rgba(13, 34, 46, 0.84), rgba(34, 98, 108, 0.34)),
+    url("../assets/images/almaty.jpg");
+}
+
+.explore-hero--profile {
+  background-image:
+    linear-gradient(130deg, rgba(8, 29, 46, 0.78), rgba(26, 90, 123, 0.32)),
+    url("../assets/images/almaty1.webp");
+}
+
+.explore-hero--admin {
+  background-image:
+    linear-gradient(130deg, rgba(10, 28, 44, 0.82), rgba(37, 95, 119, 0.34)),
+    url("../assets/images/almaty.jpg");
 }
 
 .explore-hero__label {
@@ -212,11 +224,21 @@
   color: #ffffff;
 }
 
+.explore-link--external {
+  background: #1f5f3a;
+}
+
 .explore-button {
   border: 1px solid #cfe0ef;
   background: #ffffff;
   color: #143858;
   cursor: pointer;
+}
+
+.explore-button--danger {
+  border-color: #efc6c6;
+  color: #a43333;
+  background: #fff5f5;
 }
 
 .explore-empty,
@@ -235,6 +257,12 @@
   background: #eef9f1;
   color: #24754b;
   border: 1px solid #cde9d8;
+}
+
+.explore-inline-note {
+  color: #68839b;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .details-page {
@@ -339,6 +367,17 @@
   gap: 20px;
 }
 
+.security-contact {
+  margin-top: 28px;
+}
+
+.security-contact__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
 .profile-summary {
   margin-bottom: 30px;
 }
@@ -365,6 +404,14 @@
   color: #102842;
   margin-bottom: 18px;
   font-size: 30px;
+}
+
+.admin-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 .admin-form {
@@ -408,6 +455,10 @@
 .admin-check input {
   width: auto;
   padding: 0;
+}
+
+.admin-section-toolbar {
+  margin-top: 40px;
 }
 
 .security-card h3 {

@@ -4,6 +4,7 @@ import api from "../api/axios";
 import Navbar from "../components/Navbar";
 import { getApiErrorMessage } from "../utils/apiError";
 import { formatPrice, formatRating, getPlaceSubtitle, isFoodCategory } from "../utils/format";
+import { getPlaceExternalLink } from "../utils/externalLinks";
 import { applyImageFallback } from "../utils/images";
 import "./Explore.css";
 
@@ -106,6 +107,11 @@ function Entertainment() {
                 />
 
                 <div className="explore-card__body">
+                  {(() => {
+                    const mapLink = getPlaceExternalLink(place.title);
+
+                    return (
+                      <>
                   <p className="explore-card__meta">{getPlaceSubtitle(place)}</p>
                   <h3>{place.title}</h3>
                   <p className="explore-card__text">
@@ -122,7 +128,23 @@ function Entertainment() {
                     <Link className="explore-link" to={`/places/${place.id}`}>
                       View Details
                     </Link>
+
+                    {mapLink ? (
+                      <a
+                        className="explore-button"
+                        href={mapLink}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Open in 2GIS
+                      </a>
+                    ) : (
+                      <span className="explore-inline-note">Add 2GIS link later</span>
+                    )}
                   </div>
+                      </>
+                    );
+                  })()}
                 </div>
               </article>
             ))

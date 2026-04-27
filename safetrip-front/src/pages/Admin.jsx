@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Navbar from "../components/Navbar";
 import api from "../api/axios";
 import { getApiErrorMessage } from "../utils/apiError";
+import { formatPrice, formatRating, getPlaceSubtitle, isFoodCategory } from "../utils/format";
 import { getCurrentUser, isAdminUser, isAuthenticated } from "../utils/auth";
+import { applyImageFallback } from "../utils/images";
 import "./Explore.css";
 
 const initialTourForm = {
@@ -35,6 +37,40 @@ const initialPlaceForm = {
   h3Index: "",
 };
 
+function normalizeTourForm(data) {
+  return {
+    title: data.title || "",
+    description: data.description || "",
+    city: data.city || "Almaty",
+    durationDays: data.durationDays ?? 1,
+    price: data.price ?? "",
+    rating: data.rating ?? "",
+    imageUrl: data.imageUrl || "",
+    isFeatured: Boolean(data.isFeatured),
+    isVerified: data.isVerified ?? true,
+    startLat: data.startLat ?? "",
+    startLng: data.startLng ?? "",
+    h3Index: data.h3Index || "",
+  };
+}
+
+function normalizePlaceForm(data) {
+  return {
+    title: data.title || "",
+    description: data.description || "",
+    category: data.category || "Restaurant",
+    averagePrice: data.averagePrice ?? "",
+    rating: data.rating ?? "",
+    imageUrl: data.imageUrl || "",
+    isFeatured: Boolean(data.isFeatured),
+    isVerified: data.isVerified ?? true,
+    city: data.city || "Almaty",
+    latitude: data.latitude ?? "",
+    longitude: data.longitude ?? "",
+    h3Index: data.h3Index || "",
+  };
+}
+
 function Admin() {
   const user = getCurrentUser();
   const [tourForm, setTourForm] = useState(initialTourForm);
@@ -43,6 +79,42 @@ function Admin() {
   const [placeMessage, setPlaceMessage] = useState("");
   const [tourLoading, setTourLoading] = useState(false);
   const [placeLoading, setPlaceLoading] = useState(false);
+  const [tours, setTours] = useState([]);
+  const [places, setPlaces] = useState([]);
+  const [loadingData, setLoadingData] = useState(true);
+  const [tourEditingId, setTourEditingId] = useState(null);
+  const [placeEditingId, setPlaceEditingId] = useState(null);
+
+  const foodPlaces = useMemo(() => places.filter((place) => isFoodCategory(place.category)), [places]);
+  const entertainmentPlaces = useMemo(
+    () => places.filter((place) => !isFoodCategory(place.category)),
+    [places]
+  );
+
+  useEffect(() => {
+    const loadData = async () => {
+      if (!isAuthenticated() || !isAdminUser()) {
+        return;
+      }
+
+      setLoadingData(true);
+      try {
+        const [{ data: toursData }, { data: placesData }] = await Promise.all([
+          api.get("/api/tours"),
+          api.get("/api/places"),
+        ]);
+
+        setTours(toursData);
+        setPlaces(placesData);
+      } catch (err) {
+        setTourMessage(getApiErrorMessage(err, "Failed to load admin data."));
+      } finally {
+        setLoadingData(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   if (!isAuthenticated()) {
     return (
@@ -68,6 +140,15 @@ function Admin() {
     );
   }
 
+  const refreshData = async () => {
+    const [{ data: toursData }, { data: placesData }] = await Promise.all([
+      api.get("/api/tours"),
+      api.get("/api/places"),
+    ]);
+    setTours(toursData);
+    setPlaces(placesData);
+  };
+
   const handleTourChange = (event) => {
     const { name, value, type, checked } = event.target;
     setTourForm((current) => ({
@@ -84,24 +165,47 @@ function Admin() {
     }));
   };
 
+  const resetTourForm = () => {
+    setTourForm(initialTourForm);
+    setTourEditingId(null);
+    setTourMessage("");
+  };
+
+  const resetPlaceForm = () => {
+    setPlaceForm(initialPlaceForm);
+    setPlaceEditingId(null);
+    setPlaceMessage("");
+  };
+
   const submitTour = async (event) => {
     event.preventDefault();
     setTourLoading(true);
     setTourMessage("");
 
     try {
-      await api.post("/api/tours", {
+      const payload = {
         ...tourForm,
         durationDays: Number(tourForm.durationDays),
         price: Number(tourForm.price),
         rating: tourForm.rating ? Number(tourForm.rating) : null,
         startLat: tourForm.startLat ? Number(tourForm.startLat) : null,
         startLng: tourForm.startLng ? Number(tourForm.startLng) : null,
-      });
-      setTourMessage("Tour created successfully.");
-      setTourForm(initialTourForm);
+      };
+
+      if (tourEditingId) {
+        await api.put(`/api/tours/${tourEditingId}`, payload);
+        setTourMessage("Tour updated successfully.");
+      } else {
+        await api.post("/api/tours", payload);
+        setTourMessage("Tour created successfully.");
+      }
+
+      resetTourForm();
+      await refreshData();
     } catch (err) {
-      setTourMessage(getApiErrorMessage(err, "Failed to create tour."));
+      setTourMessage(
+        getApiErrorMessage(err, tourEditingId ? "Failed to update tour." : "Failed to create tour.")
+      );
     } finally {
       setTourLoading(false);
     }
@@ -113,19 +217,81 @@ function Admin() {
     setPlaceMessage("");
 
     try {
-      await api.post("/api/places", {
+      const payload = {
         ...placeForm,
         averagePrice: placeForm.averagePrice ? Number(placeForm.averagePrice) : null,
         rating: placeForm.rating ? Number(placeForm.rating) : null,
         latitude: Number(placeForm.latitude),
         longitude: Number(placeForm.longitude),
-      });
-      setPlaceMessage("Place created successfully.");
-      setPlaceForm(initialPlaceForm);
+      };
+
+      if (placeEditingId) {
+        await api.put(`/api/places/${placeEditingId}`, payload);
+        setPlaceMessage("Place updated successfully.");
+      } else {
+        await api.post("/api/places", payload);
+        setPlaceMessage("Place created successfully.");
+      }
+
+      resetPlaceForm();
+      await refreshData();
     } catch (err) {
-      setPlaceMessage(getApiErrorMessage(err, "Failed to create place."));
+      setPlaceMessage(
+        getApiErrorMessage(
+          err,
+          placeEditingId ? "Failed to update place." : "Failed to create place."
+        )
+      );
     } finally {
       setPlaceLoading(false);
+    }
+  };
+
+  const startEditTour = (tour) => {
+    setTourEditingId(tour.id);
+    setTourForm(normalizeTourForm(tour));
+    setTourMessage(`Editing "${tour.title}"`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const startEditPlace = (place) => {
+    setPlaceEditingId(place.id);
+    setPlaceForm(normalizePlaceForm(place));
+    setPlaceMessage(`Editing "${place.title}"`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const deleteTour = async (tour) => {
+    if (!window.confirm(`Delete tour "${tour.title}"?`)) {
+      return;
+    }
+
+    try {
+      await api.delete(`/api/tours/${tour.id}`);
+      if (tourEditingId === tour.id) {
+        resetTourForm();
+      }
+      setTourMessage("Tour deleted successfully.");
+      await refreshData();
+    } catch (err) {
+      setTourMessage(getApiErrorMessage(err, "Failed to delete tour."));
+    }
+  };
+
+  const deletePlace = async (place) => {
+    if (!window.confirm(`Delete place "${place.title}"?`)) {
+      return;
+    }
+
+    try {
+      await api.delete(`/api/places/${place.id}`);
+      if (placeEditingId === place.id) {
+        resetPlaceForm();
+      }
+      setPlaceMessage("Place deleted successfully.");
+      await refreshData();
+    } catch (err) {
+      setPlaceMessage(getApiErrorMessage(err, "Failed to delete place."));
     }
   };
 
@@ -134,12 +300,12 @@ function Admin() {
       <Navbar />
 
       <div className="explore-shell">
-        <section className="explore-hero">
+        <section className="explore-hero explore-hero--admin">
           <span className="explore-hero__label">Admin</span>
-          <h1>Publish tours, restaurants, and entertainment content.</h1>
+          <h1>Publish, edit, and delete tours, restaurants, and entertainment content.</h1>
           <p>
-            This panel uses the existing backend create endpoints so an admin can add new tours and
-            places directly from the frontend.
+            This panel uses the existing backend create, update, and delete endpoints so an admin
+            can manage site content directly from the frontend.
           </p>
 
           <div className="explore-stats">
@@ -148,19 +314,26 @@ function Admin() {
               <span>Current role</span>
             </div>
             <div>
-              <strong>/api/tours</strong>
-              <span>Create tours</span>
+              <strong>{tours.length}</strong>
+              <span>Total tours</span>
             </div>
             <div>
-              <strong>/api/places</strong>
-              <span>Create food and entertainment</span>
+              <strong>{places.length}</strong>
+              <span>Total places</span>
             </div>
           </div>
         </section>
 
         <div className="admin-grid">
           <section className="admin-card">
-            <h3>Create Tour</h3>
+            <div className="admin-card__header">
+              <h3>{tourEditingId ? "Edit Tour" : "Create Tour"}</h3>
+              {tourEditingId ? (
+                <button type="button" className="explore-button" onClick={resetTourForm}>
+                  Cancel edit
+                </button>
+              ) : null}
+            </div>
             <form className="admin-form" onSubmit={submitTour}>
               <input name="title" placeholder="Tour title" value={tourForm.title} onChange={handleTourChange} required />
               <textarea name="description" placeholder="Description" value={tourForm.description} onChange={handleTourChange} rows="4" />
@@ -174,13 +347,22 @@ function Admin() {
               <input name="h3Index" placeholder="H3 index" value={tourForm.h3Index} onChange={handleTourChange} />
               <label className="admin-check"><input name="isFeatured" type="checkbox" checked={tourForm.isFeatured} onChange={handleTourChange} /> Featured</label>
               <label className="admin-check"><input name="isVerified" type="checkbox" checked={tourForm.isVerified} onChange={handleTourChange} /> Verified</label>
-              <button type="submit" disabled={tourLoading}>{tourLoading ? "Creating..." : "Create Tour"}</button>
+              <button type="submit" disabled={tourLoading}>
+                {tourLoading ? "Saving..." : tourEditingId ? "Update Tour" : "Create Tour"}
+              </button>
             </form>
             {tourMessage ? <p className="explore-note">{tourMessage}</p> : null}
           </section>
 
           <section className="admin-card">
-            <h3>Create Place</h3>
+            <div className="admin-card__header">
+              <h3>{placeEditingId ? "Edit Place" : "Create Place"}</h3>
+              {placeEditingId ? (
+                <button type="button" className="explore-button" onClick={resetPlaceForm}>
+                  Cancel edit
+                </button>
+              ) : null}
+            </div>
             <form className="admin-form" onSubmit={submitPlace}>
               <input name="title" placeholder="Place title" value={placeForm.title} onChange={handlePlaceChange} required />
               <textarea name="description" placeholder="Description" value={placeForm.description} onChange={handlePlaceChange} rows="4" />
@@ -200,10 +382,151 @@ function Admin() {
               <input name="h3Index" placeholder="H3 index" value={placeForm.h3Index} onChange={handlePlaceChange} required />
               <label className="admin-check"><input name="isFeatured" type="checkbox" checked={placeForm.isFeatured} onChange={handlePlaceChange} /> Featured</label>
               <label className="admin-check"><input name="isVerified" type="checkbox" checked={placeForm.isVerified} onChange={handlePlaceChange} /> Verified</label>
-              <button type="submit" disabled={placeLoading}>{placeLoading ? "Creating..." : "Create Place"}</button>
+              <button type="submit" disabled={placeLoading}>
+                {placeLoading ? "Saving..." : placeEditingId ? "Update Place" : "Create Place"}
+              </button>
             </form>
             {placeMessage ? <p className="explore-note">{placeMessage}</p> : null}
           </section>
+        </div>
+
+        <div className="explore-toolbar admin-section-toolbar">
+          <div>
+            <h2>Manage Tours</h2>
+            <p>Edit existing tour cards or remove them from the project.</p>
+          </div>
+        </div>
+
+        {loadingData ? (
+          <div className="explore-feedback">Loading admin content...</div>
+        ) : (
+          <div className="explore-grid">
+            {tours.length ? (
+              tours.map((tour) => (
+                <article className="explore-card" key={tour.id}>
+                  <img
+                    src={tour.imageUrl || "https://via.placeholder.com/400x250?text=Tour"}
+                    alt={tour.title}
+                    onError={(event) =>
+                      applyImageFallback(
+                        event,
+                        "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80"
+                      )
+                    }
+                  />
+                  <div className="explore-card__body">
+                    <p className="explore-card__meta">{tour.city}</p>
+                    <h3>{tour.title}</h3>
+                    <p className="explore-card__text">{tour.description || "No description available."}</p>
+                    <div className="explore-card__info">
+                      <span className="explore-chip">{formatPrice(tour.price)}</span>
+                      <span className="explore-chip">Rating {formatRating(tour.rating)}</span>
+                    </div>
+                    <div className="explore-card__actions">
+                      <button type="button" className="explore-button" onClick={() => startEditTour(tour)}>
+                        Edit
+                      </button>
+                      <button type="button" className="explore-button explore-button--danger" onClick={() => deleteTour(tour)}>
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))
+            ) : (
+              <div className="explore-empty">No tours found.</div>
+            )}
+          </div>
+        )}
+
+        <div className="explore-toolbar admin-section-toolbar">
+          <div>
+            <h2>Manage Food</h2>
+            <p>Change restaurants and cafes or remove them from the catalog.</p>
+          </div>
+        </div>
+
+        <div className="explore-grid">
+          {foodPlaces.length ? (
+            foodPlaces.map((place) => (
+              <article className="explore-card" key={place.id}>
+                <img
+                  src={place.imageUrl || "https://via.placeholder.com/400x250?text=Food+Place"}
+                  alt={place.title}
+                  onError={(event) =>
+                    applyImageFallback(
+                      event,
+                      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1200&q=80"
+                    )
+                  }
+                />
+                <div className="explore-card__body">
+                  <p className="explore-card__meta">{getPlaceSubtitle(place)}</p>
+                  <h3>{place.title}</h3>
+                  <p className="explore-card__text">{place.description || "No description available."}</p>
+                  <div className="explore-card__info">
+                    <span className="explore-chip">{formatPrice(place.averagePrice)}</span>
+                    <span className="explore-chip">Rating {formatRating(place.rating)}</span>
+                  </div>
+                  <div className="explore-card__actions">
+                    <button type="button" className="explore-button" onClick={() => startEditPlace(place)}>
+                      Edit
+                    </button>
+                    <button type="button" className="explore-button explore-button--danger" onClick={() => deletePlace(place)}>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))
+          ) : (
+            <div className="explore-empty">No food places found.</div>
+          )}
+        </div>
+
+        <div className="explore-toolbar admin-section-toolbar">
+          <div>
+            <h2>Manage Entertainment</h2>
+            <p>Update viewpoints, museums, and other city experiences.</p>
+          </div>
+        </div>
+
+        <div className="explore-grid">
+          {entertainmentPlaces.length ? (
+            entertainmentPlaces.map((place) => (
+              <article className="explore-card" key={place.id}>
+                <img
+                  src={place.imageUrl || "https://via.placeholder.com/400x250?text=Entertainment"}
+                  alt={place.title}
+                  onError={(event) =>
+                    applyImageFallback(
+                      event,
+                      "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1200&q=80"
+                    )
+                  }
+                />
+                <div className="explore-card__body">
+                  <p className="explore-card__meta">{getPlaceSubtitle(place)}</p>
+                  <h3>{place.title}</h3>
+                  <p className="explore-card__text">{place.description || "No description available."}</p>
+                  <div className="explore-card__info">
+                    <span className="explore-chip">{place.category}</span>
+                    <span className="explore-chip">{formatPrice(place.averagePrice)}</span>
+                  </div>
+                  <div className="explore-card__actions">
+                    <button type="button" className="explore-button" onClick={() => startEditPlace(place)}>
+                      Edit
+                    </button>
+                    <button type="button" className="explore-button explore-button--danger" onClick={() => deletePlace(place)}>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))
+          ) : (
+            <div className="explore-empty">No entertainment places found.</div>
+          )}
         </div>
       </div>
     </main>

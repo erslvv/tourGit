@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import almatyHero from "../assets/images/almaty.jpg";
+import almatyCityImage from "../assets/images/almaty1.webp";
 import bigAlmatyLakeImage from "../assets/images/bal.jpg";
+import urtaImage from "../assets/images/urta.jpg";
 import "./Home.css";
 
 function Home() {
@@ -18,8 +20,7 @@ function Home() {
       label: "Local food",
       title: "Taste Almaty",
       text: "Find trusted cafes, traditional dishes, and cozy city spots for tourists.",
-      image:
-        "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80",
+      image: urtaImage,
       link: "/food",
       linkLabel: "Explore Food",
     },
@@ -27,8 +28,7 @@ function Home() {
       label: "City moments",
       title: "Entertainment & culture",
       text: "Move from museums and viewpoints to evening activities and local events.",
-      image:
-        "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1200&q=80",
+      image: almatyCityImage,
       link: "/entertainment",
       linkLabel: "See More",
     },

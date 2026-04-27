@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import { getApiErrorMessage } from "../utils/apiError";
 import { formatPrice, formatRating, getPlaceSubtitle, isFoodCategory } from "../utils/format";
 import { isAuthenticated } from "../utils/auth";
+import { getPlaceExternalLink } from "../utils/externalLinks";
 import { applyImageFallback } from "../utils/images";
 import "./Explore.css";
 
@@ -16,6 +17,7 @@ function PlaceDetails() {
   const [favoriteLoading, setFavoriteLoading] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteMessage, setFavoriteMessage] = useState("");
+  const mapLink = getPlaceExternalLink(place?.title);
 
   useEffect(() => {
     const fetchPlace = async () => {
@@ -134,6 +136,19 @@ function PlaceDetails() {
               <Link className="explore-link" to={isFoodCategory(place.category) ? "/food" : "/entertainment"}>
                 Back to section
               </Link>
+
+              {mapLink ? (
+                <a
+                  className="explore-link explore-link--external"
+                  href={mapLink}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open in 2GIS
+                </a>
+              ) : (
+                <p className="explore-inline-note">Add 2GIS link in `externalLinks.js`.</p>
+              )}
             </div>
 
             {favoriteMessage ? <p className="explore-note">{favoriteMessage}</p> : null}

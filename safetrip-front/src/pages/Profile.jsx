@@ -91,7 +91,7 @@ function Profile() {
       <Navbar />
 
       <div className="explore-shell">
-        <section className="explore-hero">
+        <section className="explore-hero explore-hero--profile">
           <span className="explore-hero__label">Profile</span>
           <h1>Your saved places and routes in one page.</h1>
           <p>

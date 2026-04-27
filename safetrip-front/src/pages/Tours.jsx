@@ -4,6 +4,7 @@ import api from "../api/axios";
 import Navbar from "../components/Navbar";
 import { getApiErrorMessage } from "../utils/apiError";
 import { formatPrice, formatRating } from "../utils/format";
+import { getTourExternalLink } from "../utils/externalLinks";
 import { applyImageFallback } from "../utils/images";
 import bigAlmatyLakeImage from "../assets/images/bal.jpg";
 import charynImage from "../assets/images/charyn.jpg";
@@ -109,6 +110,11 @@ function Tours() {
                 />
 
                 <div className="explore-card__body">
+                  {(() => {
+                    const instagramLink = getTourExternalLink(tour.title);
+
+                    return (
+                      <>
                   <p className="explore-card__meta">{tour.city}</p>
                   <h3>{tour.title}</h3>
                   <p className="explore-card__text">
@@ -127,7 +133,23 @@ function Tours() {
                     <Link to={`/tours/${tour.id}`} className="explore-link">
                       View Details
                     </Link>
+
+                    {instagramLink ? (
+                      <a
+                        href={instagramLink}
+                        className="explore-button"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Instagram
+                      </a>
+                    ) : (
+                      <span className="explore-inline-note">Add Instagram link later</span>
+                    )}
                   </div>
+                      </>
+                    );
+                  })()}
                 </div>
               </article>
             ))
