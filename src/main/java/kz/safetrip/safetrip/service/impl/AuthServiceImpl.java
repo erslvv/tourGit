@@ -1,5 +1,6 @@
 package kz.safetrip.safetrip.service.impl;
 
+import kz.safetrip.safetrip.enumeration.UserRole;
 import kz.safetrip.safetrip.mapper.UserMapper;
 import kz.safetrip.safetrip.model.dto.auth.AuthResponse;
 import kz.safetrip.safetrip.model.dto.auth.LoginRequest;
@@ -33,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
         User user = new User();
         user.setEmail(email);
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        user.setRole(request.getRole());
+        user.setRole(UserRole.USER);
         user.setIsActive(true);
         User saved = userRepository.save(user);
         return AuthResponse.builder().accessToken(jwtService.generateToken(saved)).tokenType("Bearer").user(userMapper.toDto(saved)).build();
