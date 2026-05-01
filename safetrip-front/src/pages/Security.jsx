@@ -15,7 +15,7 @@ function Security() {
           <h1>Important rules, numbers, and practical advice for tourists in Almaty.</h1>
           <p>
             This section gives the visitor one reliable place for emergency contacts and basic
-            safety guidance, exactly like you wanted in the project idea.
+            safety guidance.
           </p>
 
           <div className="explore-stats">

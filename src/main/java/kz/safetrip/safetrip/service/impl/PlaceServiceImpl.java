@@ -49,6 +49,7 @@ public class PlaceServiceImpl implements PlaceService {
         existing.setCity(dto.getCity());
         existing.setLatitude(dto.getLatitude());
         existing.setLongitude(dto.getLongitude());
+        existing.setTwoGisUrl(dto.getTwoGisUrl());
         existing.setH3Index(dto.getH3Index());
 
         return placeMapper.toDto(placeRepository.save(existing));

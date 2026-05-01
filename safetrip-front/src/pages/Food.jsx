@@ -61,8 +61,7 @@ function Food() {
           <span className="explore-hero__label">Food in Almaty</span>
           <h1>Find trusted restaurants, cafes, and tourist-friendly places to eat.</h1>
           <p>
-            This page uses backend place data and filters it into a food-focused section for
-            visitors who want somewhere reliable after a tour or city walk.
+            Here you can find great places to enjoy traditional Kazakh dishes as well as many other cuisines. Explore trusted restaurants, cozy cafés, and tourist-friendly spots for a delicious meal in Almaty.
           </p>
 
           <div className="explore-stats">
@@ -105,7 +104,7 @@ function Food() {
 
                 <div className="explore-card__body">
                   {(() => {
-                    const mapLink = getPlaceExternalLink(place.title);
+                    const mapLink = place.twoGisUrl || getPlaceExternalLink(place.title);
 
                     return (
                       <>

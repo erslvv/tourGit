@@ -49,6 +49,7 @@ public class TourServiceImpl implements TourService {
         }
         existing.setStartLat(dto.getStartLat());
         existing.setStartLng(dto.getStartLng());
+        existing.setInstagramUrl(dto.getInstagramUrl());
         existing.setH3Index(dto.getH3Index());
 
         return tourMapper.toDto(tourRepository.save(existing));

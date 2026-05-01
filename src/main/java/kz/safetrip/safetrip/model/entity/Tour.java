@@ -61,6 +61,9 @@ public class Tour {
     @Column(name = "start_lng", precision = 9, scale = 6)
     private BigDecimal startLng;
 
+    @Column(name = "instagram_url", columnDefinition = "TEXT")
+    private String instagramUrl;
+
     @Column(name = "h3_index", length = 32)
     private String h3Index; // optional for tour start point
 

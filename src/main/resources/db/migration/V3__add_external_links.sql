@@ -1,0 +1,8 @@
+ALTER TABLE tours
+    ADD COLUMN IF NOT EXISTS instagram_url TEXT;
+
+ALTER TABLE places
+    ADD COLUMN IF NOT EXISTS two_gis_url TEXT;
+
+ALTER TABLE places
+    ALTER COLUMN h3_index DROP NOT NULL;

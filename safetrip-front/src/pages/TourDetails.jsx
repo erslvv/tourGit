@@ -17,7 +17,7 @@ function TourDetails() {
   const [favoriteLoading, setFavoriteLoading] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteMessage, setFavoriteMessage] = useState("");
-  const instagramLink = getTourExternalLink(tour?.title);
+  const instagramLink = tour?.instagramUrl || getTourExternalLink(tour?.title);
 
   useEffect(() => {
     const fetchTour = async () => {

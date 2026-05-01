@@ -64,8 +64,7 @@ function Entertainment() {
           <span className="explore-hero__label">Entertainment in Almaty</span>
           <h1>Choose viewpoints, cultural spots, and city experiences after the main route.</h1>
           <p>
-            This section is built from backend places as well, but filtered into non-food spots so
-            tourists can discover where to go next.
+            “Here you can find the best places for entertainment in Almaty, from beautiful viewpoints and cultural landmarks to relaxing city spots. Explore where to go next and enjoy more of the city.
           </p>
 
           <div className="explore-stats">
@@ -108,7 +107,7 @@ function Entertainment() {
 
                 <div className="explore-card__body">
                   {(() => {
-                    const mapLink = getPlaceExternalLink(place.title);
+                    const mapLink = place.twoGisUrl || getPlaceExternalLink(place.title);
 
                     return (
                       <>

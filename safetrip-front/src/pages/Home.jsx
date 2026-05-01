@@ -120,8 +120,8 @@ function Home() {
           <p className="section-label">Discover the city with confidence</p>
           <h2>Almaty is your first stop, and this platform is your starting point.</h2>
           <p>
-            The idea is simple: a tourist opens the website, learns what Kazakhstan and Almaty can
-            offer, then moves into tours, food, entertainment, and safety information without
+            The idea is simple: you open the website, learn what Kazakhstan and Almaty can
+            offer, then move into tours, food, entertainment, and safety information without
             getting lost.
           </p>
         </div>
@@ -144,11 +144,10 @@ function Home() {
 
       <section className="featured">
         <div className="featured__header">
-          <p className="section-label">What the user can explore</p>
+          <p className="section-label">What you can explore</p>
           <h2>From mountain routes to food and city experiences.</h2>
           <p className="featured__text">
-            The homepage should introduce the mood of Almaty and smoothly guide users into the
-            sections where real cards and detailed pages live.
+            
           </p>
         </div>
 
@@ -171,8 +170,8 @@ function Home() {
 
       <section className="sections">
         <div className="sections__header">
-          <p className="section-label">Main sections</p>
-          <h2>Each section can become a working page connected to backend data.</h2>
+          <p className="section-label"></p>
+          <h2>Main sections:</h2>
         </div>
 
         <div className="sections__grid">

@@ -27,6 +27,7 @@ public class TourDto {
     private Boolean isVerified;
     private BigDecimal startLat;
     private BigDecimal startLng;
+    private String instagramUrl;
     private String h3Index;
     private LocalDateTime createdAt;
 }
