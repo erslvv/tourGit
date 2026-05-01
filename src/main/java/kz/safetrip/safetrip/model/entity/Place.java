@@ -62,7 +62,10 @@ public class Place {
     @Column(name = "longitude", nullable = false, precision = 9, scale = 6)
     private BigDecimal longitude;
 
-    @Column(name = "h3_index", nullable = false, length = 32)
+    @Column(name = "two_gis_url", columnDefinition = "TEXT")
+    private String twoGisUrl;
+
+    @Column(name = "h3_index", length = 32)
     private String h3Index;
 
     @CreationTimestamp

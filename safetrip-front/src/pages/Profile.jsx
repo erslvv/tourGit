@@ -95,8 +95,7 @@ function Profile() {
           <span className="explore-hero__label">Profile</span>
           <h1>Your saved places and routes in one page.</h1>
           <p>
-            This page shows the current user, favorite tours, and favorite places using the backend
-            profile endpoint.
+            This page shows the current user, favorite tours and favorite places.
           </p>
 
           <div className="explore-stats">

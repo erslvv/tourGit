@@ -19,7 +19,7 @@ const initialTourForm = {
   isVerified: true,
   startLat: "",
   startLng: "",
-  h3Index: "",
+  instagramUrl: "",
 };
 
 const initialPlaceForm = {
@@ -34,7 +34,7 @@ const initialPlaceForm = {
   city: "Almaty",
   latitude: "",
   longitude: "",
-  h3Index: "",
+  twoGisUrl: "",
 };
 
 function normalizeTourForm(data) {
@@ -50,7 +50,7 @@ function normalizeTourForm(data) {
     isVerified: data.isVerified ?? true,
     startLat: data.startLat ?? "",
     startLng: data.startLng ?? "",
-    h3Index: data.h3Index || "",
+    instagramUrl: data.instagramUrl || "",
   };
 }
 
@@ -67,7 +67,7 @@ function normalizePlaceForm(data) {
     city: data.city || "Almaty",
     latitude: data.latitude ?? "",
     longitude: data.longitude ?? "",
-    h3Index: data.h3Index || "",
+    twoGisUrl: data.twoGisUrl || "",
   };
 }
 
@@ -304,8 +304,8 @@ function Admin() {
           <span className="explore-hero__label">Admin</span>
           <h1>Publish, edit, and delete tours, restaurants, and entertainment content.</h1>
           <p>
-            This panel uses the existing backend create, update, and delete endpoints so an admin
-            can manage site content directly from the frontend.
+            In this page admin
+            can manage site content.
           </p>
 
           <div className="explore-stats">
@@ -342,9 +342,9 @@ function Admin() {
               <input name="price" type="number" step="0.01" placeholder="Price" value={tourForm.price} onChange={handleTourChange} required />
               <input name="rating" type="number" step="0.1" placeholder="Rating" value={tourForm.rating} onChange={handleTourChange} />
               <input name="imageUrl" placeholder="Image URL" value={tourForm.imageUrl} onChange={handleTourChange} />
+              <input name="instagramUrl" placeholder="Instagram link" value={tourForm.instagramUrl} onChange={handleTourChange} />
               <input name="startLat" type="number" step="0.000001" placeholder="Start latitude" value={tourForm.startLat} onChange={handleTourChange} />
               <input name="startLng" type="number" step="0.000001" placeholder="Start longitude" value={tourForm.startLng} onChange={handleTourChange} />
-              <input name="h3Index" placeholder="H3 index" value={tourForm.h3Index} onChange={handleTourChange} />
               <label className="admin-check"><input name="isFeatured" type="checkbox" checked={tourForm.isFeatured} onChange={handleTourChange} /> Featured</label>
               <label className="admin-check"><input name="isVerified" type="checkbox" checked={tourForm.isVerified} onChange={handleTourChange} /> Verified</label>
               <button type="submit" disabled={tourLoading}>
@@ -376,10 +376,10 @@ function Admin() {
               <input name="averagePrice" type="number" step="0.01" placeholder="Average price" value={placeForm.averagePrice} onChange={handlePlaceChange} />
               <input name="rating" type="number" step="0.1" placeholder="Rating" value={placeForm.rating} onChange={handlePlaceChange} />
               <input name="imageUrl" placeholder="Image URL" value={placeForm.imageUrl} onChange={handlePlaceChange} />
+              <input name="twoGisUrl" placeholder="2GIS link" value={placeForm.twoGisUrl} onChange={handlePlaceChange} />
               <input name="city" placeholder="City" value={placeForm.city} onChange={handlePlaceChange} required />
               <input name="latitude" type="number" step="0.000001" placeholder="Latitude" value={placeForm.latitude} onChange={handlePlaceChange} required />
               <input name="longitude" type="number" step="0.000001" placeholder="Longitude" value={placeForm.longitude} onChange={handlePlaceChange} required />
-              <input name="h3Index" placeholder="H3 index" value={placeForm.h3Index} onChange={handlePlaceChange} required />
               <label className="admin-check"><input name="isFeatured" type="checkbox" checked={placeForm.isFeatured} onChange={handlePlaceChange} /> Featured</label>
               <label className="admin-check"><input name="isVerified" type="checkbox" checked={placeForm.isVerified} onChange={handlePlaceChange} /> Verified</label>
               <button type="submit" disabled={placeLoading}>

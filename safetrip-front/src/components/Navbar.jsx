@@ -14,7 +14,7 @@ function Navbar() {
   return (
     <header className="navbar">
       <Link to="/" className="navbar__logo">
-        SafeTrip Almaty
+        SafeTrip
       </Link>
 
       <nav className="navbar__links">

@@ -27,6 +27,7 @@ public class PlaceDto {
     private String city;
     private BigDecimal latitude;
     private BigDecimal longitude;
+    private String twoGisUrl;
     private String h3Index;
     private LocalDateTime createdAt;
 }

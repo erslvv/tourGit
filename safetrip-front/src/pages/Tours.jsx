@@ -61,8 +61,7 @@ function Tours() {
           <span className="explore-hero__label">Tours around Almaty</span>
           <h1>Explore verified routes and open each card for full details.</h1>
           <p>
-            This section is connected to the backend `GET /api/tours` endpoint and gives the user a
-            clear catalog of tourist routes before they open a specific destination.
+            Discover the best tours around Almaty, from mountain lakes and canyons to cultural landmarks. Choose a verified route, check the details, and plan your trip with confidence.
           </p>
 
           <div className="explore-stats">
@@ -111,7 +110,7 @@ function Tours() {
 
                 <div className="explore-card__body">
                   {(() => {
-                    const instagramLink = getTourExternalLink(tour.title);
+                    const instagramLink = tour.instagramUrl || getTourExternalLink(tour.title);
 
                     return (
                       <>

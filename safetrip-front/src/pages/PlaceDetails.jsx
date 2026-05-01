@@ -17,7 +17,7 @@ function PlaceDetails() {
   const [favoriteLoading, setFavoriteLoading] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteMessage, setFavoriteMessage] = useState("");
-  const mapLink = getPlaceExternalLink(place?.title);
+  const mapLink = place?.twoGisUrl || getPlaceExternalLink(place?.title);
 
   useEffect(() => {
     const fetchPlace = async () => {
