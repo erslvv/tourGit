@@ -492,3 +492,119 @@
     padding: 22px;
   }
 }
+
+@media (max-width: 640px) {
+  .explore-page,
+  .details-page {
+    padding: 108px 14px 48px;
+  }
+
+  .explore-hero {
+    padding: 22px 18px;
+    border-radius: 24px;
+    margin-bottom: 24px;
+  }
+
+  .explore-hero__label,
+  .details-main__eyebrow,
+  .explore-card__meta,
+  .details-list dt {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+
+  .explore-hero h1,
+  .details-main h1 {
+    font-size: 36px;
+    line-height: 1;
+  }
+
+  .explore-hero p,
+  .details-description,
+  .explore-toolbar p,
+  .explore-card__text,
+  .security-card p,
+  .security-card li {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .explore-stats {
+    grid-template-columns: 1fr;
+    margin-top: 20px;
+  }
+
+  .explore-stats div {
+    padding: 14px 16px;
+    border-radius: 18px;
+  }
+
+  .explore-toolbar {
+    margin-bottom: 18px;
+  }
+
+  .explore-toolbar h2,
+  .security-card h3,
+  .admin-card h3 {
+    font-size: 28px;
+  }
+
+  .explore-grid {
+    gap: 18px;
+  }
+
+  .explore-card,
+  .details-banner,
+  .details-main,
+  .details-side,
+  .security-card,
+  .admin-card,
+  .explore-empty,
+  .explore-feedback {
+    border-radius: 20px;
+  }
+
+  .explore-card img {
+    height: 200px;
+  }
+
+  .explore-card__body,
+  .details-main,
+  .details-side,
+  .security-card,
+  .admin-card {
+    padding: 18px;
+  }
+
+  .explore-card h3 {
+    font-size: 22px;
+  }
+
+  .explore-card__actions,
+  .details-actions,
+  .security-contact__actions {
+    gap: 8px;
+  }
+
+  .explore-link,
+  .explore-button {
+    width: 100%;
+    padding: 12px 14px;
+  }
+
+  .explore-inline-note {
+    width: 100%;
+  }
+
+  .details-list dd {
+    font-size: 16px;
+  }
+
+  .admin-form input,
+  .admin-form textarea,
+  .admin-form select,
+  .admin-form button {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+}

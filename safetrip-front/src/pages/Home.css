@@ -408,16 +408,37 @@
 }
 
 @media (max-width: 768px) {
+  .hero {
+    min-height: 720px;
+    height: auto;
+  }
+
   .hero__content {
+    width: calc(100% - 28px);
+    margin-left: 14px;
     padding-top: 156px;
+    padding-bottom: 28px;
+  }
+
+  .hero__subtitle {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    padding: 8px 12px;
+  }
+
+  .hero h1 {
+    font-size: clamp(44px, 15vw, 72px);
+    margin-bottom: 18px;
   }
 
   .hero__stats {
+    grid-template-columns: 1fr;
     gap: 12px;
   }
 
   .hero__text {
-    font-size: 18px;
+    font-size: 16px;
+    margin-bottom: 24px;
   }
 
   .intro,
@@ -425,6 +446,8 @@
   .sections {
     padding-left: 20px;
     padding-right: 20px;
+    padding-top: 64px;
+    padding-bottom: 64px;
   }
 
   .hero__buttons {
@@ -434,5 +457,53 @@
 
   .hero__btn {
     text-align: center;
+  }
+
+  .card img {
+    height: 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    min-height: 660px;
+  }
+
+  .hero__content {
+    width: calc(100% - 20px);
+    margin-left: 10px;
+    padding-top: 142px;
+  }
+
+  .hero h1 {
+    font-size: clamp(38px, 13vw, 56px);
+  }
+
+  .intro__copy h2,
+  .featured h2,
+  .sections__header h2 {
+    font-size: 34px;
+  }
+
+  .intro__copy p:last-child,
+  .featured__text,
+  .card p,
+  .section-card p {
+    font-size: 15px;
+  }
+
+  .intro__card,
+  .card__content,
+  .section-card {
+    padding: 20px;
+  }
+
+  .card img {
+    height: 200px;
+  }
+
+  .card h3,
+  .section-card h3 {
+    font-size: 22px;
   }
 }
