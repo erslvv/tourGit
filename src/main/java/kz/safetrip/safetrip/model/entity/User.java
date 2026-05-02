@@ -19,13 +19,14 @@ import java.time.LocalDateTime;
                 @UniqueConstraint(name = "uk_users_email", columnNames = "email")
         },
         indexes = {
-                @Index(name = "idx_users_email", columnList = "email")
+                @Index(name = "idx_users_email", columnList = "email"),
+                @Index(name = "idx_users_telegram_chat_id", columnList = "telegram_chat_id")
         }
 )
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // BIGSERIAL
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "email", nullable = false, length = 255)
@@ -40,6 +41,15 @@ public class User {
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
+
+    @Column(name = "telegram_chat_id", length = 64)
+    private String telegramChatId;
+
+    @Column(name = "telegram_username", length = 255)
+    private String telegramUsername;
+
+    @Column(name = "telegram_verified", nullable = false)
+    private Boolean telegramVerified = false;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)

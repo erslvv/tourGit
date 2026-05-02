@@ -27,6 +27,8 @@ public interface UserRepository {
 
     Optional<User> findByEmail(String email);
 
+    Optional<User> findByTelegramChatId(String telegramChatId);
+
     boolean existsByEmail(String email);
 
     List<User> findAllByRole(UserRole role);
