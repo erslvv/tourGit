@@ -7,7 +7,9 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -63,6 +65,15 @@ public class Tour {
 
     @Column(name = "instagram_url", columnDefinition = "TEXT")
     private String instagramUrl;
+
+    @Column(name = "start_date")
+    private LocalDate startDate;
+
+    @Column(name = "start_time")
+    private LocalTime startTime;
+
+    @Column(name = "capacity")
+    private Integer capacity;
 
     @Column(name = "h3_index", length = 32)
     private String h3Index; // optional for tour start point

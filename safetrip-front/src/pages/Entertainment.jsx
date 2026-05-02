@@ -10,6 +10,7 @@ import "./Explore.css";
 
 function Entertainment() {
   const [places, setPlaces] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -31,6 +32,13 @@ function Entertainment() {
   const entertainmentPlaces = useMemo(
     () => places.filter((place) => !isFoodCategory(place.category)),
     [places]
+  );
+  const filteredEntertainmentPlaces = useMemo(
+    () =>
+      entertainmentPlaces.filter((place) =>
+        place.title.toLowerCase().includes(searchQuery.trim().toLowerCase())
+      ),
+    [entertainmentPlaces, searchQuery]
   );
 
   if (loading) {
@@ -88,11 +96,18 @@ function Entertainment() {
             <h2>Entertainment Cards</h2>
             <p>Open a card to see location details, average price, and place description.</p>
           </div>
+          <input
+            className="explore-search"
+            type="search"
+            placeholder="Search entertainment by name"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+          />
         </div>
 
         <div className="explore-grid">
-          {entertainmentPlaces.length ? (
-            entertainmentPlaces.map((place) => (
+          {filteredEntertainmentPlaces.length ? (
+            filteredEntertainmentPlaces.map((place) => (
               <article className="explore-card" key={place.id}>
                 <img
                   src={place.imageUrl || "https://via.placeholder.com/400x250?text=Entertainment"}
@@ -148,7 +163,11 @@ function Entertainment() {
               </article>
             ))
           ) : (
-            <div className="explore-empty">No entertainment places found.</div>
+            <div className="explore-empty">
+              {entertainmentPlaces.length
+                ? "No entertainment places match your search."
+                : "No entertainment places found."}
+            </div>
           )}
         </div>
       </div>

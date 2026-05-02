@@ -13,8 +13,11 @@ function Profile() {
   const [favorites, setFavorites] = useState(null);
   const [tours, setTours] = useState([]);
   const [places, setPlaces] = useState([]);
+  const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [bookingMessage, setBookingMessage] = useState("");
+  const [cancelingBookingId, setCancelingBookingId] = useState(null);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -25,15 +28,17 @@ function Profile() {
       }
 
       try {
-        const [{ data: favoritesData }, { data: toursData }, { data: placesData }] = await Promise.all([
+        const [{ data: favoritesData }, { data: toursData }, { data: placesData }, { data: bookingsData }] = await Promise.all([
           api.get("/api/profile/favorites"),
           api.get("/api/tours"),
           api.get("/api/places"),
+          api.get("/api/tour-bookings/my"),
         ]);
 
         setFavorites(favoritesData);
         setTours(toursData);
         setPlaces(placesData);
+        setBookings(bookingsData);
       } catch (err) {
         setError(getApiErrorMessage(err, "Failed to load profile data."));
       } finally {
@@ -63,6 +68,25 @@ function Profile() {
       .map((favorite) => places.find((place) => place.id === favorite.placeId))
       .filter(Boolean);
   }, [favorites, places]);
+
+  const cancelBooking = async (bookingId) => {
+    if (!window.confirm("Cancel this booking?")) {
+      return;
+    }
+
+    setCancelingBookingId(bookingId);
+    setBookingMessage("");
+
+    try {
+      await api.delete(`/api/tour-bookings/${bookingId}`);
+      setBookings((current) => current.filter((booking) => booking.id !== bookingId));
+      setBookingMessage("Booking canceled successfully.");
+    } catch (err) {
+      setBookingMessage(getApiErrorMessage(err, "Failed to cancel booking."));
+    } finally {
+      setCancelingBookingId(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -111,6 +135,10 @@ function Profile() {
               <strong>{favoritePlaces.length}</strong>
               <span>Favorite places</span>
             </div>
+            <div>
+              <strong>{bookings.length}</strong>
+              <span>Tickets</span>
+            </div>
           </div>
         </section>
 
@@ -120,6 +148,47 @@ function Profile() {
             <p>Email: {user?.email}</p>
             <p>Role: {user?.role}</p>
           </div>
+        </div>
+
+        <div className="explore-toolbar">
+          <div>
+            <h2>My Tickets</h2>
+            <p>Each booking keeps a simple ticket code that you can show later.</p>
+          </div>
+        </div>
+
+        {bookingMessage ? <p className="explore-note">{bookingMessage}</p> : null}
+
+        <div className="explore-grid">
+          {bookings.length ? (
+            bookings.map((booking) => (
+              <article className="security-card ticket-card" key={booking.id}>
+                <p className="details-main__eyebrow">Tour booking</p>
+                <h3>{booking.tourTitle}</h3>
+                <p>Ticket code: {booking.ticketCode}</p>
+                <p>Full name: {booking.fullName}</p>
+                <p>Phone: {booking.phoneNumber}</p>
+                <p>Seat count: 1</p>
+                <p>Status: {booking.status}</p>
+                <p>Booked at: {new Date(booking.createdAt).toLocaleString()}</p>
+                <div className="explore-card__actions">
+                  <Link to={`/tours/${booking.tourId}`} className="explore-link">
+                    Open Tour
+                  </Link>
+                  <button
+                    type="button"
+                    className="explore-button explore-button--danger"
+                    onClick={() => cancelBooking(booking.id)}
+                    disabled={cancelingBookingId === booking.id}
+                  >
+                    {cancelingBookingId === booking.id ? "Canceling..." : "Cancel Booking"}
+                  </button>
+                </div>
+              </article>
+            ))
+          ) : (
+            <div className="explore-empty">No tickets yet. Book a tour to see your ticket here.</div>
+          )}
         </div>
 
         <div className="explore-toolbar">

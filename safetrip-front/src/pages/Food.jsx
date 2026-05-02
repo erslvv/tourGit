@@ -10,6 +10,7 @@ import "./Explore.css";
 
 function Food() {
   const [places, setPlaces] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -29,6 +30,13 @@ function Food() {
   }, []);
 
   const foodPlaces = useMemo(() => places.filter((place) => isFoodCategory(place.category)), [places]);
+  const filteredFoodPlaces = useMemo(
+    () =>
+      foodPlaces.filter((place) =>
+        place.title.toLowerCase().includes(searchQuery.trim().toLowerCase())
+      ),
+    [foodPlaces, searchQuery]
+  );
 
   if (loading) {
     return (
@@ -85,11 +93,18 @@ function Food() {
             <h2>Food Cards</h2>
             <p>Open a place card to see full details, pricing, category, and location info.</p>
           </div>
+          <input
+            className="explore-search"
+            type="search"
+            placeholder="Search food places by name"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+          />
         </div>
 
         <div className="explore-grid">
-          {foodPlaces.length ? (
-            foodPlaces.map((place) => (
+          {filteredFoodPlaces.length ? (
+            filteredFoodPlaces.map((place) => (
               <article className="explore-card" key={place.id}>
                 <img
                   src={place.imageUrl || "https://via.placeholder.com/400x250?text=Food+Place"}
@@ -145,7 +160,9 @@ function Food() {
               </article>
             ))
           ) : (
-            <div className="explore-empty">No food places found.</div>
+            <div className="explore-empty">
+              {foodPlaces.length ? "No food places match your search." : "No food places found."}
+            </div>
           )}
         </div>
       </div>

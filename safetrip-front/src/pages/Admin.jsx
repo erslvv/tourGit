@@ -11,6 +11,9 @@ const initialTourForm = {
   title: "",
   description: "",
   city: "Almaty",
+  startDate: "",
+  startTime: "",
+  capacity: 20,
   durationDays: 1,
   price: "",
   rating: "",
@@ -42,6 +45,9 @@ function normalizeTourForm(data) {
     title: data.title || "",
     description: data.description || "",
     city: data.city || "Almaty",
+    startDate: data.startDate || "",
+    startTime: data.startTime ? String(data.startTime).slice(0, 5) : "",
+    capacity: data.capacity ?? 20,
     durationDays: data.durationDays ?? 1,
     price: data.price ?? "",
     rating: data.rating ?? "",
@@ -71,6 +77,24 @@ function normalizePlaceForm(data) {
   };
 }
 
+function validateCoordinate(value, label, min, max, required = false) {
+  if (value === "" || value === null || value === undefined) {
+    return required ? `${label} is required.` : null;
+  }
+
+  const numericValue = Number(value);
+
+  if (Number.isNaN(numericValue)) {
+    return `${label} must be a valid number.`;
+  }
+
+  if (numericValue < min || numericValue > max) {
+    return `${label} must be between ${min} and ${max}.`;
+  }
+
+  return null;
+}
+
 function Admin() {
   const user = getCurrentUser();
   const [tourForm, setTourForm] = useState(initialTourForm);
@@ -84,6 +108,7 @@ function Admin() {
   const [loadingData, setLoadingData] = useState(true);
   const [tourEditingId, setTourEditingId] = useState(null);
   const [placeEditingId, setPlaceEditingId] = useState(null);
+  const [bookings, setBookings] = useState([]);
 
   const foodPlaces = useMemo(() => places.filter((place) => isFoodCategory(place.category)), [places]);
   const entertainmentPlaces = useMemo(
@@ -99,13 +124,15 @@ function Admin() {
 
       setLoadingData(true);
       try {
-        const [{ data: toursData }, { data: placesData }] = await Promise.all([
+        const [{ data: toursData }, { data: placesData }, { data: bookingsData }] = await Promise.all([
           api.get("/api/tours"),
           api.get("/api/places"),
+          api.get("/api/tour-bookings"),
         ]);
 
         setTours(toursData);
         setPlaces(placesData);
+        setBookings(bookingsData);
       } catch (err) {
         setTourMessage(getApiErrorMessage(err, "Failed to load admin data."));
       } finally {
@@ -141,12 +168,14 @@ function Admin() {
   }
 
   const refreshData = async () => {
-    const [{ data: toursData }, { data: placesData }] = await Promise.all([
+    const [{ data: toursData }, { data: placesData }, { data: bookingsData }] = await Promise.all([
       api.get("/api/tours"),
       api.get("/api/places"),
+      api.get("/api/tour-bookings"),
     ]);
     setTours(toursData);
     setPlaces(placesData);
+    setBookings(bookingsData);
   };
 
   const handleTourChange = (event) => {
@@ -183,8 +212,17 @@ function Admin() {
     setTourMessage("");
 
     try {
+      const latitudeError = validateCoordinate(tourForm.startLat, "Start latitude", -90, 90);
+      const longitudeError = validateCoordinate(tourForm.startLng, "Start longitude", -180, 180);
+
+      if (latitudeError || longitudeError) {
+        setTourMessage(latitudeError || longitudeError);
+        return;
+      }
+
       const payload = {
         ...tourForm,
+        capacity: Number(tourForm.capacity),
         durationDays: Number(tourForm.durationDays),
         price: Number(tourForm.price),
         rating: tourForm.rating ? Number(tourForm.rating) : null,
@@ -217,6 +255,14 @@ function Admin() {
     setPlaceMessage("");
 
     try {
+      const latitudeError = validateCoordinate(placeForm.latitude, "Latitude", -90, 90, true);
+      const longitudeError = validateCoordinate(placeForm.longitude, "Longitude", -180, 180, true);
+
+      if (latitudeError || longitudeError) {
+        setPlaceMessage(latitudeError || longitudeError);
+        return;
+      }
+
       const payload = {
         ...placeForm,
         averagePrice: placeForm.averagePrice ? Number(placeForm.averagePrice) : null,
@@ -321,6 +367,10 @@ function Admin() {
               <strong>{places.length}</strong>
               <span>Total places</span>
             </div>
+            <div>
+              <strong>{bookings.length}</strong>
+              <span>Total bookings</span>
+            </div>
           </div>
         </section>
 
@@ -338,13 +388,16 @@ function Admin() {
               <input name="title" placeholder="Tour title" value={tourForm.title} onChange={handleTourChange} required />
               <textarea name="description" placeholder="Description" value={tourForm.description} onChange={handleTourChange} rows="4" />
               <input name="city" placeholder="City" value={tourForm.city} onChange={handleTourChange} required />
+              <input name="startDate" type="date" value={tourForm.startDate} onChange={handleTourChange} required />
+              <input name="startTime" type="time" value={tourForm.startTime} onChange={handleTourChange} required />
+              <input name="capacity" type="number" min="1" placeholder="Available seats" value={tourForm.capacity} onChange={handleTourChange} required />
               <input name="durationDays" type="number" placeholder="Duration days" value={tourForm.durationDays} onChange={handleTourChange} required />
               <input name="price" type="number" step="0.01" placeholder="Price" value={tourForm.price} onChange={handleTourChange} required />
               <input name="rating" type="number" step="0.1" placeholder="Rating" value={tourForm.rating} onChange={handleTourChange} />
               <input name="imageUrl" placeholder="Image URL" value={tourForm.imageUrl} onChange={handleTourChange} />
               <input name="instagramUrl" placeholder="Instagram link" value={tourForm.instagramUrl} onChange={handleTourChange} />
-              <input name="startLat" type="number" step="0.000001" placeholder="Start latitude" value={tourForm.startLat} onChange={handleTourChange} />
-              <input name="startLng" type="number" step="0.000001" placeholder="Start longitude" value={tourForm.startLng} onChange={handleTourChange} />
+              <input name="startLat" type="number" step="0.000001" min="-90" max="90" placeholder="Start latitude (-90 to 90)" value={tourForm.startLat} onChange={handleTourChange} />
+              <input name="startLng" type="number" step="0.000001" min="-180" max="180" placeholder="Start longitude (-180 to 180)" value={tourForm.startLng} onChange={handleTourChange} />
               <label className="admin-check"><input name="isFeatured" type="checkbox" checked={tourForm.isFeatured} onChange={handleTourChange} /> Featured</label>
               <label className="admin-check"><input name="isVerified" type="checkbox" checked={tourForm.isVerified} onChange={handleTourChange} /> Verified</label>
               <button type="submit" disabled={tourLoading}>
@@ -378,8 +431,8 @@ function Admin() {
               <input name="imageUrl" placeholder="Image URL" value={placeForm.imageUrl} onChange={handlePlaceChange} />
               <input name="twoGisUrl" placeholder="2GIS link" value={placeForm.twoGisUrl} onChange={handlePlaceChange} />
               <input name="city" placeholder="City" value={placeForm.city} onChange={handlePlaceChange} required />
-              <input name="latitude" type="number" step="0.000001" placeholder="Latitude" value={placeForm.latitude} onChange={handlePlaceChange} required />
-              <input name="longitude" type="number" step="0.000001" placeholder="Longitude" value={placeForm.longitude} onChange={handlePlaceChange} required />
+              <input name="latitude" type="number" step="0.000001" min="-90" max="90" placeholder="Latitude (-90 to 90)" value={placeForm.latitude} onChange={handlePlaceChange} required />
+              <input name="longitude" type="number" step="0.000001" min="-180" max="180" placeholder="Longitude (-180 to 180)" value={placeForm.longitude} onChange={handlePlaceChange} required />
               <label className="admin-check"><input name="isFeatured" type="checkbox" checked={placeForm.isFeatured} onChange={handlePlaceChange} /> Featured</label>
               <label className="admin-check"><input name="isVerified" type="checkbox" checked={placeForm.isVerified} onChange={handlePlaceChange} /> Verified</label>
               <button type="submit" disabled={placeLoading}>
@@ -388,6 +441,34 @@ function Admin() {
             </form>
             {placeMessage ? <p className="explore-note">{placeMessage}</p> : null}
           </section>
+        </div>
+
+        <div className="explore-toolbar admin-section-toolbar">
+          <div>
+            <h2>Tour Bookings</h2>
+            <p>Users who booked a tour and the ticket details they submitted.</p>
+          </div>
+        </div>
+
+        <div className="explore-grid">
+          {bookings.length ? (
+            bookings.map((booking) => (
+              <article className="security-card ticket-card" key={booking.id}>
+                <p className="details-main__eyebrow">{booking.tourTitle}</p>
+                <h3>{booking.fullName}</h3>
+                <p>User account: {booking.userEmail}</p>
+                <p>Contact email: {booking.contactEmail}</p>
+                <p>Phone: {booking.phoneNumber}</p>
+                <p>Seat count: 1</p>
+                <p>Ticket code: {booking.ticketCode}</p>
+                <p>Status: {booking.status}</p>
+                <p>Created at: {new Date(booking.createdAt).toLocaleString()}</p>
+                {booking.notes ? <p>Notes: {booking.notes}</p> : null}
+              </article>
+            ))
+          ) : (
+            <div className="explore-empty">No tour bookings yet.</div>
+          )}
         </div>
 
         <div className="explore-toolbar admin-section-toolbar">
@@ -421,6 +502,9 @@ function Admin() {
                     <div className="explore-card__info">
                       <span className="explore-chip">{formatPrice(tour.price)}</span>
                       <span className="explore-chip">Rating {formatRating(tour.rating)}</span>
+                      <span className="explore-chip">{tour.startDate || "Date TBA"}</span>
+                      <span className="explore-chip">{tour.startTime ? String(tour.startTime).slice(0, 5) : "Time TBA"}</span>
+                      <span className="explore-chip">{tour.remainingSeats ?? tour.capacity ?? 0} seats left</span>
                     </div>
                     <div className="explore-card__actions">
                       <button type="button" className="explore-button" onClick={() => startEditTour(tour)}>

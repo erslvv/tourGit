@@ -4,9 +4,11 @@ import almatyHero from "../assets/images/almaty.jpg";
 import almatyCityImage from "../assets/images/almaty1.webp";
 import bigAlmatyLakeImage from "../assets/images/bal.jpg";
 import urtaImage from "../assets/images/urta.jpg";
+import { isAuthenticated } from "../utils/auth";
 import "./Home.css";
 
 function Home() {
+  const authenticated = isAuthenticated();
   const highlights = [
     {
       label: "Mountain escapes",
@@ -104,13 +106,17 @@ function Home() {
               Explore Almaty
             </Link>
 
-            <Link to="/login" className="hero__btn hero__btn--secondary">
-              Login
-            </Link>
+            {!authenticated ? (
+              <>
+                <Link to="/login" className="hero__btn hero__btn--secondary">
+                  Login
+                </Link>
 
-            <Link to="/register" className="hero__btn hero__btn--accent">
-              Register
-            </Link>
+                <Link to="/register" className="hero__btn hero__btn--accent">
+                  Register
+                </Link>
+              </>
+            ) : null}
           </div>
         </div>
       </section>

@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -28,6 +30,11 @@ public class TourDto {
     private BigDecimal startLat;
     private BigDecimal startLng;
     private String instagramUrl;
+    private LocalDate startDate;
+    private LocalTime startTime;
+    private Integer capacity;
+    private Integer bookedSeats;
+    private Integer remainingSeats;
     private String h3Index;
     private LocalDateTime createdAt;
 }

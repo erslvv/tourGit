@@ -4,7 +4,7 @@ import api from "../api/axios";
 import Navbar from "../components/Navbar";
 import { getApiErrorMessage } from "../utils/apiError";
 import { formatPrice, formatRating } from "../utils/format";
-import { isAuthenticated } from "../utils/auth";
+import { getCurrentUser, isAuthenticated } from "../utils/auth";
 import { getTourExternalLink } from "../utils/externalLinks";
 import { applyImageFallback } from "../utils/images";
 import "./Explore.css";
@@ -17,14 +17,26 @@ function TourDetails() {
   const [favoriteLoading, setFavoriteLoading] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteMessage, setFavoriteMessage] = useState("");
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [bookingMessage, setBookingMessage] = useState("");
+  const [hasBooked, setHasBooked] = useState(false);
+  const user = getCurrentUser();
+  const [bookingForm, setBookingForm] = useState({
+    fullName: "",
+    phoneNumber: "",
+    contactEmail: user?.email || "",
+    notes: "",
+  });
   const instagramLink = tour?.instagramUrl || getTourExternalLink(tour?.title);
 
   useEffect(() => {
     const fetchTour = async () => {
       try {
-        const [{ data: tourData }, favoritesResponse] = await Promise.all([
+        const [{ data: tourData }, favoritesResponse, bookingsResponse] = await Promise.all([
           api.get(`/api/tours/${id}`),
           isAuthenticated() ? api.get("/api/profile/favorites") : Promise.resolve({ data: null }),
+          isAuthenticated() ? api.get("/api/tour-bookings/my") : Promise.resolve({ data: [] }),
         ]);
 
         setTour(tourData);
@@ -33,6 +45,8 @@ function TourDetails() {
           const favorite = favoritesResponse.data.tours.find((item) => item.tourId === Number(id));
           setIsFavorite(Boolean(favorite));
         }
+
+        setHasBooked(bookingsResponse.data.some((item) => item.tourId === Number(id)));
       } catch (err) {
         setError(getApiErrorMessage(err, "Failed to load tour details."));
       } finally {
@@ -66,6 +80,48 @@ function TourDetails() {
       setFavoriteMessage(getApiErrorMessage(err, "Favorite action failed."));
     } finally {
       setFavoriteLoading(false);
+    }
+  };
+
+  const handleBookingChange = (event) => {
+    const { name, value } = event.target;
+    setBookingForm((current) => ({
+      ...current,
+      [name]: value,
+    }));
+  };
+
+  const submitBooking = async (event) => {
+    event.preventDefault();
+
+    if (!isAuthenticated()) {
+      setBookingMessage("Login first to book this tour.");
+      return;
+    }
+
+    setBookingLoading(true);
+    setBookingMessage("");
+
+    try {
+      const { data } = await api.post("/api/tour-bookings", {
+        tourId: Number(id),
+        fullName: bookingForm.fullName,
+        phoneNumber: bookingForm.phoneNumber,
+        contactEmail: bookingForm.contactEmail,
+        notes: bookingForm.notes,
+      });
+
+      setBookingMessage(`Booking confirmed. Ticket code: ${data.ticketCode}`);
+      setBookingOpen(false);
+      setHasBooked(true);
+      setBookingForm((current) => ({
+        ...current,
+        notes: "",
+      }));
+    } catch (err) {
+      setBookingMessage(getApiErrorMessage(err, "Booking failed. Please try again."));
+    } finally {
+      setBookingLoading(false);
     }
   };
 
@@ -132,6 +188,36 @@ function TourDetails() {
               <button
                 className="explore-button"
                 type="button"
+                onClick={() => {
+                  if (!isAuthenticated()) {
+                    setBookingMessage("Login first to book this tour.");
+                    return;
+                  }
+                  if (hasBooked) {
+                    setBookingMessage("You already booked this tour.");
+                    return;
+                  }
+                  if (tour?.remainingSeats !== null && tour?.remainingSeats !== undefined && tour.remainingSeats < 1) {
+                    setBookingMessage("No seats left for this tour.");
+                    return;
+                  }
+                  setBookingOpen((current) => !current);
+                  setBookingMessage("");
+                }}
+                disabled={hasBooked || (tour?.remainingSeats !== null && tour?.remainingSeats !== undefined && tour.remainingSeats < 1)}
+              >
+                {hasBooked
+                  ? "Already booked"
+                  : tour?.remainingSeats !== null && tour?.remainingSeats !== undefined && tour.remainingSeats < 1
+                    ? "No seats left"
+                    : bookingOpen
+                      ? "Close booking form"
+                      : "Book this tour"}
+              </button>
+
+              <button
+                className="explore-button"
+                type="button"
                 onClick={toggleFavorite}
                 disabled={favoriteLoading}
               >
@@ -160,7 +246,47 @@ function TourDetails() {
               )}
             </div>
 
+            {bookingOpen ? (
+              <form className="booking-form" onSubmit={submitBooking}>
+                <h2>Book this tour</h2>
+                <p>Send your details to the admin and keep the ticket in your profile.</p>
+                <input
+                  name="fullName"
+                  placeholder="Full name"
+                  value={bookingForm.fullName}
+                  onChange={handleBookingChange}
+                  required
+                />
+                <input
+                  name="phoneNumber"
+                  placeholder="Phone number"
+                  value={bookingForm.phoneNumber}
+                  onChange={handleBookingChange}
+                  required
+                />
+                <input
+                  name="contactEmail"
+                  type="email"
+                  placeholder="Contact email"
+                  value={bookingForm.contactEmail}
+                  onChange={handleBookingChange}
+                  required
+                />
+                <textarea
+                  name="notes"
+                  placeholder="Extra notes for the admin"
+                  value={bookingForm.notes}
+                  onChange={handleBookingChange}
+                  rows="4"
+                />
+                <button className="explore-link booking-form__submit" type="submit" disabled={bookingLoading}>
+                  {bookingLoading ? "Sending..." : "Confirm booking"}
+                </button>
+              </form>
+            ) : null}
+
             {favoriteMessage ? <p className="explore-note">{favoriteMessage}</p> : null}
+            {bookingMessage ? <p className="explore-note">{bookingMessage}</p> : null}
           </section>
 
           <aside className="details-side">
@@ -180,6 +306,18 @@ function TourDetails() {
               <div>
                 <dt>Duration</dt>
                 <dd>{tour.durationDays ? `${tour.durationDays} day(s)` : "Flexible"}</dd>
+              </div>
+              <div>
+                <dt>Date</dt>
+                <dd>{tour.startDate || "TBA"}</dd>
+              </div>
+              <div>
+                <dt>Time</dt>
+                <dd>{tour.startTime ? String(tour.startTime).slice(0, 5) : "TBA"}</dd>
+              </div>
+              <div>
+                <dt>Seats left</dt>
+                <dd>{tour.remainingSeats ?? tour.capacity ?? "TBA"}</dd>
               </div>
               <div>
                 <dt>Verified</dt>

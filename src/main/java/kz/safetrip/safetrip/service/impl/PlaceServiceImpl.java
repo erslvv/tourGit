@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -23,6 +24,7 @@ public class PlaceServiceImpl implements PlaceService {
     @Override
     @Transactional
     public PlaceDto create(PlaceDto dto) {
+        validateCoordinates(dto.getLatitude(), dto.getLongitude());
         Place entity = placeMapper.toEntity(dto);
         entity.setId(null);
         Place saved = placeRepository.save(entity);
@@ -32,6 +34,7 @@ public class PlaceServiceImpl implements PlaceService {
     @Override
     @Transactional
     public PlaceDto update(Long id, PlaceDto dto) {
+        validateCoordinates(dto.getLatitude(), dto.getLongitude());
         Place existing = getEntityById(id);
 
         existing.setTitle(dto.getTitle());
@@ -102,5 +105,14 @@ public class PlaceServiceImpl implements PlaceService {
     private Place getEntityById(Long id) {
         return placeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Place not found: " + id));
+    }
+
+    private void validateCoordinates(BigDecimal latitude, BigDecimal longitude) {
+        if (latitude == null || latitude.compareTo(BigDecimal.valueOf(-90)) < 0 || latitude.compareTo(BigDecimal.valueOf(90)) > 0) {
+            throw new IllegalArgumentException("Latitude must be between -90 and 90.");
+        }
+        if (longitude == null || longitude.compareTo(BigDecimal.valueOf(-180)) < 0 || longitude.compareTo(BigDecimal.valueOf(180)) > 0) {
+            throw new IllegalArgumentException("Longitude must be between -180 and 180.");
+        }
     }
 }

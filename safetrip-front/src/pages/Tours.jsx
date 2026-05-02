@@ -12,6 +12,7 @@ import "./Explore.css";
 
 function Tours() {
   const [tours, setTours] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -29,6 +30,10 @@ function Tours() {
 
     fetchTours();
   }, []);
+
+  const filteredTours = tours.filter((tour) =>
+    tour.title.toLowerCase().includes(searchQuery.trim().toLowerCase())
+  );
 
   if (loading) {
     return (
@@ -85,11 +90,18 @@ function Tours() {
             <h2>Tour Cards</h2>
             <p>Compare route, city, duration, price, and then open the full card with details.</p>
           </div>
+          <input
+            className="explore-search"
+            type="search"
+            placeholder="Search tours by name"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+          />
         </div>
 
         <div className="explore-grid">
-          {tours.length > 0 ? (
-            tours.map((tour) => (
+          {filteredTours.length > 0 ? (
+            filteredTours.map((tour) => (
               <article className="explore-card" key={tour.id}>
                 <img
                   src={
@@ -126,6 +138,9 @@ function Tours() {
                     <span className="explore-chip">
                       {tour.durationDays ? `${tour.durationDays} day(s)` : "Flexible duration"}
                     </span>
+                    <span className="explore-chip">{tour.startDate || "Date TBA"}</span>
+                    <span className="explore-chip">{tour.startTime ? String(tour.startTime).slice(0, 5) : "Time TBA"}</span>
+                    <span className="explore-chip">{tour.remainingSeats ?? tour.capacity ?? 0} seats left</span>
                   </div>
 
                   <div className="explore-card__actions">
@@ -153,7 +168,9 @@ function Tours() {
               </article>
             ))
           ) : (
-            <div className="explore-empty">No tours found.</div>
+            <div className="explore-empty">
+              {tours.length ? "No tours match your search." : "No tours found."}
+            </div>
           )}
         </div>
       </div>
