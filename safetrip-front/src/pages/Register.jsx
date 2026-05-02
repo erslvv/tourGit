@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import Footer from "../components/Footer";
 import { saveAuth } from "../utils/auth";
 import "./Auth.css";
 
@@ -76,6 +77,9 @@ function Register() {
         </section>
 
         <section className="auth-card">
+          <Link to="/" className="auth-back">
+            Back to Home
+          </Link>
           <p className="auth-card__eyebrow">Register</p>
           <h2>Create account</h2>
           <p className="auth-card__text">
@@ -120,6 +124,8 @@ function Register() {
           </p>
         </section>
       </div>
+
+      <Footer />
     </main>
   );
 }

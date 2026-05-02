@@ -337,6 +337,77 @@
   padding: 32px 80px 100px;
 }
 
+.why {
+  padding: 0 80px 32px;
+}
+
+.why__content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  gap: 24px;
+  padding: 34px;
+  border-radius: 34px;
+  background:
+    linear-gradient(140deg, rgba(14, 37, 58, 0.92), rgba(34, 88, 123, 0.82)),
+    url("../assets/images/almaty1.webp");
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 24px 56px rgba(13, 36, 56, 0.14);
+}
+
+.why__copy h2 {
+  font-size: clamp(34px, 5vw, 54px);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  margin-bottom: 18px;
+  color: #ffffff;
+}
+
+.why__copy p:last-child {
+  max-width: 620px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.why .section-label {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.why__card {
+  align-self: center;
+  padding: 26px 26px 26px 30px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 18px 38px rgba(8, 24, 36, 0.14);
+}
+
+.why__list {
+  display: grid;
+  gap: 14px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.why__list li {
+  position: relative;
+  padding-left: 28px;
+  color: #143858;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.why__list li::before {
+  content: "\2713";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #1f7a4b;
+  font-weight: 800;
+}
+
 .sections__header {
   max-width: 780px;
   margin-bottom: 32px;
@@ -395,13 +466,15 @@
   .hero__stats,
   .cards,
   .sections__grid,
-  .intro {
+  .intro,
+  .why__content {
     grid-template-columns: 1fr;
   }
 
   .intro,
   .featured,
-  .sections {
+  .sections,
+  .why {
     padding-left: 40px;
     padding-right: 40px;
   }
@@ -443,11 +516,29 @@
 
   .intro,
   .featured,
-  .sections {
+  .sections,
+  .why {
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 64px;
     padding-bottom: 64px;
+  }
+
+  .why {
+    padding-top: 0;
+  }
+
+  .why__content {
+    padding: 24px 20px;
+    border-radius: 24px;
+  }
+
+  .why__copy p:last-child {
+    font-size: 15px;
+  }
+
+  .why__list li {
+    font-size: 17px;
   }
 
   .hero__buttons {
@@ -494,7 +585,8 @@
 
   .intro__card,
   .card__content,
-  .section-card {
+  .section-card,
+  .why__card {
     padding: 20px;
   }
 

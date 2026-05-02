@@ -1,10 +1,8 @@
 import Navbar from "../components/Navbar";
-import { securityContactLinks } from "../utils/externalLinks";
+import Footer from "../components/Footer";
 import "./Explore.css";
 
 function Security() {
-  const { telegram, instagram } = securityContactLinks;
-
   return (
     <main className="explore-page">
       <Navbar />
@@ -72,40 +70,9 @@ function Security() {
             </p>
           </article>
         </div>
-
-        <section className="security-contact">
-          <article className="security-card">
-            <h3>Contact Us</h3>
-            <p>
-              If you want to ask about tours, places, or general travel help, you can also contact
-              our team through social media.
-            </p>
-
-            <div className="security-contact__actions">
-              {telegram ? (
-                <a className="explore-link" href={telegram} target="_blank" rel="noreferrer">
-                  Telegram
-                </a>
-              ) : (
-                <span className="explore-inline-note">Add Telegram link in `externalLinks.js`.</span>
-              )}
-
-              {instagram ? (
-                <a
-                  className="explore-link explore-link--external"
-                  href={instagram}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Instagram
-                </a>
-              ) : (
-                <span className="explore-inline-note">Add Instagram link in `externalLinks.js`.</span>
-              )}
-            </div>
-          </article>
-        </section>
       </div>
+
+      <Footer />
     </main>
   );
 }

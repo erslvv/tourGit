@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import api from "../api/axios";
 import { getApiErrorMessage } from "../utils/apiError";
 import { formatPrice, formatRating, getPlaceSubtitle, isFoodCategory } from "../utils/format";
@@ -613,6 +614,8 @@ function Admin() {
           )}
         </div>
       </div>
+
+      <Footer />
     </main>
   );
 }

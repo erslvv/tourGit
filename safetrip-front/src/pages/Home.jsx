@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import almatyHero from "../assets/images/almaty.jpg";
 import almatyCityImage from "../assets/images/almaty1.webp";
 import bigAlmatyLakeImage from "../assets/images/bal.jpg";
@@ -61,6 +62,13 @@ function Home() {
       text: "Collect important rules, emergency numbers, and basic local guidance in one place.",
       link: "/security",
     },
+  ];
+
+  const whySafeTripItems = [
+    "Verified places only",
+    "Easy navigation",
+    "Local recommendations",
+    "Safety information included",
   ];
 
   return (
@@ -174,6 +182,28 @@ function Home() {
         </div>
       </section>
 
+      <section className="why">
+        <div className="why__content">
+          <div className="why__copy">
+            <p className="section-label">Why SafeTrip?</p>
+            <h2>One clear travel flow for tourists arriving in Almaty.</h2>
+            <p>
+              SafeTrip is designed to keep the visitor experience simple: verified places, smooth
+              navigation, useful local tips, and safety information in one product instead of many
+              scattered tabs.
+            </p>
+          </div>
+
+          <div className="why__card">
+            <ul className="why__list">
+              {whySafeTripItems.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
       <section className="sections">
         <div className="sections__header">
           <p className="section-label"></p>
@@ -191,6 +221,8 @@ function Home() {
           ))}
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 }

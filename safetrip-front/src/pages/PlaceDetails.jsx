@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import api from "../api/axios";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import { getApiErrorMessage } from "../utils/apiError";
 import { formatPrice, formatRating, getPlaceSubtitle, isFoodCategory } from "../utils/format";
 import { isAuthenticated } from "../utils/auth";
@@ -186,6 +187,8 @@ function PlaceDetails() {
           </aside>
         </div>
       </div>
+
+      <Footer />
     </main>
   );
 }

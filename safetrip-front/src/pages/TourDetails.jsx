@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import api from "../api/axios";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import { getApiErrorMessage } from "../utils/apiError";
 import { formatPrice, formatRating } from "../utils/format";
 import { getCurrentUser, isAuthenticated } from "../utils/auth";
@@ -20,6 +21,7 @@ function TourDetails() {
   const [bookingOpen, setBookingOpen] = useState(false);
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingMessage, setBookingMessage] = useState("");
+  const [bookingSuccess, setBookingSuccess] = useState(null);
   const [hasBooked, setHasBooked] = useState(false);
   const user = getCurrentUser();
   const [bookingForm, setBookingForm] = useState({
@@ -111,11 +113,18 @@ function TourDetails() {
         notes: bookingForm.notes,
       });
 
-      setBookingMessage(`Booking confirmed. Ticket code: ${data.ticketCode}`);
+      setBookingSuccess({
+        fullName: bookingForm.fullName,
+        contactEmail: bookingForm.contactEmail,
+        ticketCode: data.ticketCode,
+      });
       setBookingOpen(false);
       setHasBooked(true);
       setBookingForm((current) => ({
         ...current,
+        fullName: "",
+        phoneNumber: "",
+        contactEmail: user?.email || "",
         notes: "",
       }));
     } catch (err) {
@@ -161,6 +170,30 @@ function TourDetails() {
   return (
     <main className="details-page">
       <Navbar />
+
+      {bookingSuccess ? (
+        <div className="booking-modal">
+          <div className="booking-modal__backdrop" onClick={() => setBookingSuccess(null)} />
+          <div className="booking-modal__card" role="dialog" aria-modal="true" aria-labelledby="booking-success-title">
+            <p className="details-main__eyebrow">Booking confirmed</p>
+            <h2 id="booking-success-title">Your tour request was sent successfully.</h2>
+            <p>
+              Ticket code: <strong>{bookingSuccess.ticketCode}</strong>
+            </p>
+            <p>
+              Our admins will contact {bookingSuccess.fullName || "you"} soon at {bookingSuccess.contactEmail || "your email"} to confirm the tour details, time, and next steps.
+            </p>
+            <div className="booking-modal__actions">
+              <button type="button" className="explore-button" onClick={() => setBookingSuccess(null)}>
+                Close
+              </button>
+              <Link to="/profile" className="explore-link" onClick={() => setBookingSuccess(null)}>
+                Open Profile
+              </Link>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <div className="details-shell">
         <div className="details-banner">
@@ -337,6 +370,8 @@ function TourDetails() {
           </aside>
         </div>
       </div>
+
+      <Footer />
     </main>
   );
 }

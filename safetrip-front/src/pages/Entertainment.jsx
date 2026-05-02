@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import { getApiErrorMessage } from "../utils/apiError";
 import { formatPrice, formatRating, getPlaceSubtitle, isFoodCategory } from "../utils/format";
 import { getPlaceExternalLink } from "../utils/externalLinks";
@@ -171,6 +172,8 @@ function Entertainment() {
           )}
         </div>
       </div>
+
+      <Footer />
     </main>
   );
 }

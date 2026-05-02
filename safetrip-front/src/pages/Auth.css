@@ -93,6 +93,20 @@
   box-shadow: 0 22px 56px rgba(16, 39, 60, 0.08);
 }
 
+.auth-back {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 18px;
+  color: #153a5a;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.auth-back:hover {
+  text-decoration: underline;
+}
+
 .auth-card__eyebrow {
   margin-bottom: 14px;
   color: #5a7692;

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import Footer from "../components/Footer";
 import { saveAuth } from "../utils/auth";
 import "./Auth.css";
 
@@ -73,6 +74,9 @@ function Login() {
         </section>
 
         <section className="auth-card">
+          <Link to="/" className="auth-back">
+            Back to Home
+          </Link>
           <p className="auth-card__eyebrow">Login</p>
           <h2>Sign in</h2>
           <p className="auth-card__text">
@@ -116,6 +120,8 @@ function Login() {
           </p>
         </section>
       </div>
+
+      <Footer />
     </main>
   );
 }

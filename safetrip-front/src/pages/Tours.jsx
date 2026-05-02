@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import { getApiErrorMessage } from "../utils/apiError";
 import { formatPrice, formatRating } from "../utils/format";
 import { getTourExternalLink } from "../utils/externalLinks";
@@ -174,6 +175,8 @@ function Tours() {
           )}
         </div>
       </div>
+
+      <Footer />
     </main>
   );
 }
