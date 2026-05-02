@@ -27,6 +27,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override @Transactional public void deleteById(Long id) { userJpaRepository.deleteById(id); }
     @Override public List<User> findAll() { return userJpaRepository.findAll(); }
     @Override public Optional<User> findByEmail(String email) { return userJpaRepository.findByEmail(email); }
+    @Override public Optional<User> findByTelegramChatId(String telegramChatId) { return userJpaRepository.findByTelegramChatId(telegramChatId); }
     @Override public boolean existsByEmail(String email) { return userJpaRepository.existsByEmail(email); }
     @Override public List<User> findAllByRole(UserRole role) { return userJpaRepository.findAllByRole(role); }
 }

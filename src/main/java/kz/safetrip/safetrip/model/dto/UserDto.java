@@ -19,5 +19,7 @@ public class UserDto {
     private String email;
     private UserRole role;
     private Boolean isActive;
+    private String telegramUsername;
+    private Boolean telegramVerified;
     private LocalDateTime createdAt;
 }

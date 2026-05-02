@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface UserJpaRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
+    Optional<User> findByTelegramChatId(String telegramChatId);
     boolean existsByEmail(String email);
     Page<User> findByRole(UserRole role, Pageable pageable);
     Page<User> findByIsActive(Boolean isActive, Pageable pageable);

@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
-import Footer from "../components/Footer";
 import { saveAuth } from "../utils/auth";
+import Footer from "../components/Footer";
 import "./Auth.css";
 
 function Login() {
   const navigate = useNavigate();
+
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -21,6 +23,7 @@ function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     setLoading(true);
     setError("");
 
@@ -77,8 +80,11 @@ function Login() {
           <Link to="/" className="auth-back">
             Back to Home
           </Link>
+
           <p className="auth-card__eyebrow">Login</p>
+
           <h2>Sign in</h2>
+
           <p className="auth-card__text">
             Use your SafeTrip account to connect the frontend with the real backend flow.
           </p>
@@ -117,6 +123,8 @@ function Login() {
 
           <p className="auth-card__footer">
             Don&apos;t have an account? <Link to="/register">Create one here</Link>.
+            <br />
+            Forgot password? <Link to="/forgot-password">Reset it here</Link>.
           </p>
         </section>
       </div>

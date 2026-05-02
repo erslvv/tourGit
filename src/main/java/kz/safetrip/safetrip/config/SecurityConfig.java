@@ -48,7 +48,8 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/error",
-                                "/api/auth/**"
+                                "/api/auth/**",
+                                "/api/internal/telegram/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/tours/**", "/api/places/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/tours/**", "/api/places/**").hasRole("ADMIN")

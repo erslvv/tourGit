@@ -44,6 +44,13 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
       APP_SECURITY_JWT_SECRET: SafeTripJwtSecretKeyForDockerLocalRun2026
       APP_SECURITY_JWT_EXPIRATION_MINUTES: 1440
+      TELEGRAM_BOT_USERNAME: ${TELEGRAM_BOT_USERNAME:-}
+      TELEGRAM_BOT_SERVICE_URL: ${TELEGRAM_BOT_SERVICE_URL:-http://telegram-bot:8001}
+      TELEGRAM_BOT_SECRET: ${TELEGRAM_BOT_SECRET:-change-me-local-secret}
+      TELEGRAM_BIND_EXPIRATION_MINUTES: ${TELEGRAM_BIND_EXPIRATION_MINUTES:-15}
+      PASSWORD_RESET_EXPIRATION_MINUTES: ${PASSWORD_RESET_EXPIRATION_MINUTES:-15}
+      PASSWORD_RESET_OTP_EXPIRATION_MINUTES: ${PASSWORD_RESET_OTP_EXPIRATION_MINUTES:-5}
+      PASSWORD_RESET_OTP_MAX_ATTEMPTS: ${PASSWORD_RESET_OTP_MAX_ATTEMPTS:-5}
 
   frontend:
     build:
@@ -54,6 +61,22 @@ services:
       - app
     ports:
       - "3000:80"
+
+  telegram-bot:
+    profiles: ["telegram"]
+    build:
+      context: ./telegram-bot
+      dockerfile: Dockerfile
+    container_name: safetrip-telegram-bot
+    depends_on:
+      - app
+    ports:
+      - "8001:8001"
+    environment:
+      BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      BOT_SHARED_SECRET: ${TELEGRAM_BOT_SECRET:-change-me-local-secret}
+      JAVA_API_BASE_URL: ${JAVA_API_BASE_URL:-http://app:8080}
+      PORT: 8001
 
 volumes:
   safetrip_pg_data:
