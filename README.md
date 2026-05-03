@@ -1,14 +1,14 @@
-# SafeTrip Almaty
+# SafeTrip
 
-SafeTrip Almaty is a deployed travel web platform for discovering tours, food places, entertainment spots, and safety information in Almaty.
+SafeTrip is basically a deployed travel web platform for tourists and also for discovering tours, food places, entertainment spots and safety information in local city.
 
 ## 1. Project Title
 
-**SafeTrip Almaty**
+**SafeTrip**
 
 ## 2. One-Line Description
 
-A city-guide and tour-booking web application that helps users explore Almaty, save favorite places, book tours, and recover their account through Telegram OTP.
+A web application for exploring Almaty. It helps users visit local city, save favorite places, book tours, and recover accounts through Telegram OTP.
 
 ## 3. Topic Area
 
@@ -16,13 +16,13 @@ TravelTech / City Guide Platform / Tourism Web Application
 
 ## 4. Problem Statement
 
-Tourists and first-time visitors often need to use many different sources to find tours, food places, entertainment spots, and safety information about a city.
+Tourists and first-time visitors usually have to use several different sources to find tours, restaurants, entertainments and safety information about a city.
 
-This creates a fragmented experience where users cannot easily browse, save, book, and manage their travel plans from one platform.
+This results in a fragmented experience where users can not easily browse, save, book and manage their travel plans from one platform. 
 
 Another issue is account recovery. Email-based password reset can be unreliable because free email providers and regional restrictions may block delivery.
 
-SafeTrip solves these issues by providing a centralized travel platform with secure authentication and Telegram-based password recovery.
+SafeTrip addresses these problems by offering a centralized travel platform with secure authentication and Telegram-based password recovery.
 
 ## 5. Proposed Solution
 
@@ -36,7 +36,7 @@ SafeTrip Almaty provides one platform where users can:
 - Recover passwords using Telegram OTP instead of email
 - Allow administrators to manage platform content
 
-The password reset flow uses a Telegram bot. During registration, the user connects their Telegram account by sending a generated token to the bot. Later, if the user forgets the password, the system sends a one-time reset code to the connected Telegram account.
+The password reset flow is a Telegram bot. To register, the user links their Telegram account by sending a token created to the bot. If at a later time the user cannot remember the password, the system issues a one-time reset code to the linked Telegram account.
 
 ## 6. Target Users
 
